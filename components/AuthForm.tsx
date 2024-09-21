@@ -12,9 +12,10 @@ import { Checkbox } from "./ui/checkbox";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { autoLogin, createUser, login, signUpWithGogole } from "@/lib/actions/user.actions";
+import { autoLogin, createUser, login, signUpWithGoogle } from "@/lib/actions/user.actions";
 import { useToast } from "@/components/hooks/use-toast";
 import AuthHeader from "./AuthHeader";
+import { Loader2 } from "lucide-react";
 
 const AuthForm = ({ type }: AuthFormProps) => {
   const router = useRouter();
@@ -28,7 +29,7 @@ const AuthForm = ({ type }: AuthFormProps) => {
     const res = async () => {
       const response = await autoLogin();
       if (response) {
-        router.push("/admin/redeem-board");
+        router.push("/admin/redeems-exchanges");
       }
     };
     res();
@@ -48,14 +49,15 @@ const AuthForm = ({ type }: AuthFormProps) => {
     const createUserData = {
       email: data.email,
       password: data.password,
-      username: data.username,
+      username: data.username!,
+      role: "user",
     };
     setIsLoading(true);
     try {
       if (type === "sign-up") {
         const response = await createUser(createUserData);
         if (response) {
-          router.push("/admin/redeem-board");
+          router.push("/admin/redeems-exchanges");
           toast({
             title: "Success",
             description: "User created successfully",
@@ -65,7 +67,7 @@ const AuthForm = ({ type }: AuthFormProps) => {
       } else if (type === "sign-in") {
         const response = await login({ email: data.email, password: data.password, remember: data.remember });
         if (response) {
-          router.push("/admin/redeem-board");
+          router.push("/admin/redeems-exchanges");
           setcheckedRemember(response.remember);
 
           toast({
@@ -95,22 +97,16 @@ const AuthForm = ({ type }: AuthFormProps) => {
   const handleLoginWithGoogle = async () => {
     try {
       setIsLoading(true);
-      const result = await signUpWithGogole();
-      if (result) router.push("/admin/redeem-board");
-    } catch (error) {
-      console.log(error);
+      const result = await signUpWithGoogle();
+      if (result && result.url) window.location.href = result.url;
+    } catch (error: any) {
       toast({
         title: "Authetication Error",
-        description: "Fail sign up",
+        description: error.message,
         variant: "destructive",
       });
     } finally {
       setIsLoading(false);
-      toast({
-        title: "Authetication Error",
-        description: "Fail sign up",
-        variant: "destructive",
-      });
     }
   };
 
@@ -163,15 +159,15 @@ const AuthForm = ({ type }: AuthFormProps) => {
                     className="text-input border-0 border-b rounded-none border-[#014C46]  focus-visible:ring-0 focus:ring-transparent"
                   />
                   {showPassword ? (
-                    <Image onClick={() => setShowPassword(false)} src={"/assets/icons/eye.png"} alt="eye" className="absolute right-6 top-2 cursor-pointer" width={24} height={24} color="black" />
+                    <Image onClick={() => setShowPassword(false)} src={"/assets/icons/eye.png"} alt="eye" className="absolute right-6 top-1 cursor-pointer" width={20} height={20} color="black" />
                   ) : (
                     <Image
                       onClick={() => setShowPassword(true)}
                       src={"/assets/icons/eye-hide.png"}
                       alt="eye-hide"
                       className="absolute right-6 top-2 cursor-pointer"
-                      width={24}
-                      height={24}
+                      width={20}
+                      height={20}
                       color="black"
                     />
                   )}
@@ -203,7 +199,7 @@ const AuthForm = ({ type }: AuthFormProps) => {
               )}
             />
 
-            <Link href={"/admin/forgot-password"} className="text-link">
+            <Link href={"/forgot-password"} className="text-link">
               Forget password?
             </Link>
           </div>
@@ -222,7 +218,14 @@ const AuthForm = ({ type }: AuthFormProps) => {
         </div>
         <Button type="button" onClick={handleLoginWithGoogle} variant={"outline"} className="secondary-btn">
           <Image src={"/assets/icons/google.png"} width={28} height={28} alt="google-icon" />
-          Login with Google
+          {isLoading ? (
+            <>
+              <Loader2 className=" animate-spin mr-2" />
+              Signing...
+            </>
+          ) : (
+            `${type === "sign-in" ? "Log In " : "Sign Up "} with Google`
+          )}
         </Button>
       </form>
     </Form>

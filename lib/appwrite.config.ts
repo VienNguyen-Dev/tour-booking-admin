@@ -1,6 +1,6 @@
 "use server";
 
-import { Account, Avatars, Client, Databases, Users } from "node-appwrite";
+import { Account, Avatars, Client, Databases, Storage, Users } from "node-appwrite";
 import { cookies } from "next/headers";
 const { NEXT_PUBLIC_APPWRITE_ENDPOINT, NEXT_PUBLIC_APPWRITE_PROJECT, NEXT_APPWRITE_KEY } = process.env;
 
@@ -37,6 +37,9 @@ export async function createAdminClient() {
     },
     get avatar() {
       return new Avatars(client);
+    },
+    get storage() {
+      return new Storage(client);
     },
   };
 }

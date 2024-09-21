@@ -10,11 +10,7 @@ import { cn } from "@/lib/utils";
 const ToastProvider = ToastPrimitives.Provider;
 
 const ToastViewport = React.forwardRef<React.ElementRef<typeof ToastPrimitives.Viewport>, React.ComponentPropsWithoutRef<typeof ToastPrimitives.Viewport>>(({ className, ...props }, ref) => (
-  <ToastPrimitives.Viewport
-    ref={ref}
-    className={cn("fixed top-0 z-[100] flex max-h-screen w-full flex-col-reverse p-4 sm:bottom-0 sm:right-0 sm:top-auto sm:flex-col md:max-w-[420px]", className)}
-    {...props}
-  />
+  <ToastPrimitives.Viewport ref={ref} className={cn("fixed top-0 z-[100] flex max-h-screen w-full flex-col-reverse p-4 sm:top-0 sm:right-0 sm:flex-col md:max-w-[420px]", className)} {...props} />
 ));
 ToastViewport.displayName = ToastPrimitives.Viewport.displayName;
 
@@ -23,8 +19,8 @@ const toastVariants = cva(
   {
     variants: {
       variant: {
-        default: "border bg-green-500 text-foreground",
-        destructive: "destructive group border-destructive bg-red-600 text-destructive-foreground",
+        default: "border bg-blue-500 text-white",
+        destructive: "destructive group border-destructive bg-red-600 text-white",
       },
     },
     defaultVariants: {

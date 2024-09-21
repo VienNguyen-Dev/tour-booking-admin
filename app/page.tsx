@@ -1,7 +1,11 @@
-export default function Home() {
-  return (
-    <main>
-      <h1 className="text-3xl text-blue-500">Hello</h1>
-    </main>
-  );
-}
+"use client";
+import { useRouter } from "next/navigation";
+import React from "react";
+
+const Home = () => {
+  const router = useRouter();
+  router.push("/sign-in");
+  return <div></div>;
+};
+
+export default Home;
