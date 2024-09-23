@@ -8,3 +8,33 @@ export const authSchema = (type: "sign-in" | "sign-up") => {
     remember: type === "sign-up" ? z.boolean().optional() : z.boolean(),
   });
 };
+
+export const forgotPasswordSchema = z.object({
+  email: z.string().email({
+    message: "Please enter an email valid",
+  }),
+});
+
+export const resetPasswordSchema = z.object({
+  password: z.string().min(8).max(25),
+  confirmPassword: z.string().min(8).max(25),
+});
+
+export const editProfileSchema = z.object({
+  avatar: z.any().optional(),
+  email: z.string().email("Please enter a valid email").optional(),
+  phoneNumber: z.string().optional().nullable(),
+  username: z.string().min(3).max(25),
+});
+
+export const passwordRecoverySchema = z.object({
+  password: z.string().min(8).max(25),
+  confirmPassword: z.string().min(8).max(25),
+});
+
+export const addUserSchema = z.object({
+  email: z.string().email("Please enter an email valid"),
+  role: z.enum(["user", "admin", "superAdmin"], {
+    message: "Please select a role",
+  }),
+});

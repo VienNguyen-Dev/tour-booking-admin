@@ -43,7 +43,7 @@ const EditRedeemForm = ({ order }: { order: Order }) => {
           <div className="flex flex-col gap-4 ">
             {Items.map((item) => {
               const subtitle = item.title === "total orders" ? "2000" : item.title === "total redeems" ? "1000" : item.title === "email" ? order.customer.email : order.customer.contact;
-              return <CardItem title={item.title} icon={item.icon} subtitle={subtitle} />;
+              return <CardItem title={item.title} icon={item.icon} subtitle={subtitle!} />;
             })}
           </div>
           <div

@@ -12,6 +12,7 @@ import { toast } from "./hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { createPasswordRecovery } from "@/lib/actions/user.actions";
 import { useRouter } from "next/navigation";
+import CustomFormField from "./CustomFormField";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -65,20 +66,7 @@ const PasswordRecover = ({ email, userId, onClose }: PasswordRecoverProps) => {
         {!isSuccess ? (
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="font-bold">Email</FormLabel>
-                    <FormControl>
-                      <Input placeholder="example@gmail.com" {...field} />
-                    </FormControl>
-
-                    <FormMessage className="text-error-message " />
-                  </FormItem>
-                )}
-              />
+              <CustomFormField name="email" label="Email" placeholder="example@gmail.com" control={form.control} />
               <DialogFooter>
                 <Button disabled={isSending} type="submit" className="bg-[#014C46] text-white hover:bg-[#014C46]/80">
                   {isSending ? (

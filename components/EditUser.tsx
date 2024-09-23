@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import "react-phone-input-2/lib/style.css";
 import * as XLSX from "xlsx";
 import React, { useRef, useState } from "react";
@@ -17,6 +16,7 @@ import PasswordRecover from "./PasswordRecover";
 import { Loader2 } from "lucide-react";
 import { toast } from "./hooks/use-toast";
 import { updateUser } from "@/lib/actions/user.actions";
+import CustomFormField from "./CustomFormField";
 
 const MAX_FILE_SIZE = 5000000;
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
@@ -182,57 +182,9 @@ const EditUser = ({ user, onClose, onUserUpdate, refreshUserList }: { user?: Use
                     </FormItem>
                   )}
                 />
-
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-semibold text-[#014C46] text-sm">Email</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Email" {...field} />
-                      </FormControl>
-                      <FormMessage className="text-error-message" />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="role"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-semibold text-[#014C46] text-sm">Permission</FormLabel>
-                      <FormControl>
-                        <Select defaultValue={updatedUser?.role} onValueChange={field.onChange}>
-                          <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Select" />
-                          </SelectTrigger>
-                          <SelectContent className="bg-white">
-                            <SelectGroup>
-                              <SelectItem value="user">User</SelectItem>
-                              <SelectItem value="admin">Admin</SelectItem>
-                              <SelectItem value="superAdmin">Super admin</SelectItem>
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage className="text-error-message" />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="phoneNumber"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-semibold text-[#014C46] text-sm">Phone</FormLabel>
-                      <FormControl>
-                        <PhoneInput inputStyle={{ width: "100%" }} placeholder="(+971) 5372948395" country={"ae"} value={field.value || ""} onChange={(value) => field.onChange(value || null)} />
-                      </FormControl>
-                      <FormMessage className="text-error-message" />
-                    </FormItem>
-                  )}
-                />
+                <CustomFormField name="email" label="Email" placeholder="example@gmail.com" control={form.control} />
+                <CustomFormField name="role" control={form.control} label="Permission" />
+                <CustomFormField name="phoneNumber" label="Phone" control={form.control} placeholder="(+971) 7458730672" />
 
                 <div className="flex justify-end">
                   <Button

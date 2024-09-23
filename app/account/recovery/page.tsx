@@ -3,6 +3,7 @@ import { toast } from "@/components/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { passwordRecoverySchema } from "@/components/validations";
 import { passwordRecover } from "@/lib/actions/user.actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
@@ -11,11 +12,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-
-const formSchema = z.object({
-  password: z.string().min(8).max(25),
-  confirmPassword: z.string().min(8).max(25),
-});
 
 const PasswordRecovery = () => {
   // const [password, setPassword] = useState("");
@@ -26,14 +22,14 @@ const PasswordRecovery = () => {
 
   const router = useRouter();
   // 1. Define your form.
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof passwordRecoverySchema>>({
+    resolver: zodResolver(passwordRecoverySchema),
     defaultValues: {
       password: "",
       confirmPassword: "",
     },
   });
-  async function onSubmit(data: z.infer<typeof formSchema>) {
+  async function onSubmit(data: z.infer<typeof passwordRecoverySchema>) {
     const userId = url.get("userId") as string;
     const secret = url.get("secret") as string;
     const { password, confirmPassword } = data;

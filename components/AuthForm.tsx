@@ -16,13 +16,14 @@ import { autoLogin, createUser, login, signUpWithGoogle } from "@/lib/actions/us
 import { useToast } from "@/components/hooks/use-toast";
 import AuthHeader from "./AuthHeader";
 import { Loader2 } from "lucide-react";
+import CustomFormField from "./CustomFormField";
 
 const AuthForm = ({ type }: AuthFormProps) => {
   const router = useRouter();
-  const [showPassword, setShowPassword] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const [checkedRemember, setcheckedRemember] = useState(false);
+  const [isGoogleLoging, setIsGoogleLogging] = useState(false);
   const authFormSchema = authSchema(type);
 
   useEffect(() => {
@@ -96,7 +97,7 @@ const AuthForm = ({ type }: AuthFormProps) => {
 
   const handleLoginWithGoogle = async () => {
     try {
-      setIsLoading(true);
+      setIsGoogleLogging(true);
       const result = await signUpWithGoogle();
       if (result && result.url) window.location.href = result.url;
     } catch (error: any) {
@@ -106,77 +107,34 @@ const AuthForm = ({ type }: AuthFormProps) => {
         variant: "destructive",
       });
     } finally {
-      setIsLoading(false);
+      setIsGoogleLogging(false);
     }
   };
 
   const authLabel = type === "sign-up" ? "Sign Up" : "Sign In";
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 lg:space-y-4 xl:space-y-6 2xl:space-y-8">
         <AuthHeader title={`${type === "sign-in" ? " Please Log In to your account and start a" : "Create a new account and start a"} `} subtitle="“New Journey”." />
         {type === "sign-up" && (
-          <FormField
-            control={form.control}
-            name="username"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-form-label">Username</FormLabel>
-                <FormControl>
-                  <Input {...field} className="text-input border-0 border-b rounded-none border-[#014C46]  focus-visible:ring-0 focus:ring-transparent" />
-                </FormControl>
+          <CustomFormField name="username" control={form.control} label="Username" placeholder="Enter your username..." type="auth" />
 
-                <FormMessage className="text-error-message" />
-              </FormItem>
-            )}
-          />
+          //   name="username"
+          //   render={({ field }) => (
+          //     <FormItem>
+          //       <FormLabel className="text-form-label">Username</FormLabel>
+          //       <FormControl>
+          //         <Input {...field} className="text-input border-0 border-b rounded-none border-[#014C46]  focus-visible:ring-0 focus:ring-transparent" />
+          //       </FormControl>
+
+          //       <FormMessage className="text-error-message" />
+          //     </FormItem>
+          //   )}
+          // />
         )}
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-form-label">Email</FormLabel>
-              <FormControl>
-                <Input {...field} className="text-input border-0 border-b rounded-none border-[#014C46]  focus-visible:ring-0 focus:ring-transparent" />
-              </FormControl>
+        <CustomFormField name="email" control={form.control} label="Email" placeholder="Enter your email..." type="auth" />
 
-              <FormMessage className="text-error-message" />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-form-label">Password</FormLabel>
-              <FormControl>
-                <div className=" relative">
-                  <Input
-                    type={`${showPassword ? "password" : "text"}`}
-                    {...field}
-                    className="text-input border-0 border-b rounded-none border-[#014C46]  focus-visible:ring-0 focus:ring-transparent"
-                  />
-                  {showPassword ? (
-                    <Image onClick={() => setShowPassword(false)} src={"/assets/icons/eye.png"} alt="eye" className="absolute right-6 top-1 cursor-pointer" width={20} height={20} color="black" />
-                  ) : (
-                    <Image
-                      onClick={() => setShowPassword(true)}
-                      src={"/assets/icons/eye-hide.png"}
-                      alt="eye-hide"
-                      className="absolute right-6 top-2 cursor-pointer"
-                      width={20}
-                      height={20}
-                      color="black"
-                    />
-                  )}
-                </div>
-              </FormControl>
-              <FormMessage className="text-error-message" />
-            </FormItem>
-          )}
-        />
+        <CustomFormField name="password" control={form.control} label="Password" placeholder="Enter your password..." type="auth" />
 
         {/* Neu remember: 
     1. show email and password
@@ -189,16 +147,15 @@ const AuthForm = ({ type }: AuthFormProps) => {
               name="remember"
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center justify-center space-x-3">
-                  <FormControl>
+                  <FormControl className="mt-1.5">
                     <Checkbox defaultChecked={form.getValues("remember")} checked={form.getValues("remember")} onCheckedChange={field.onChange} />
                   </FormControl>
-                  <div className="space-y-1 leading-none">
+                  <div className=" leading-none">
                     <FormLabel className="text-label">Remember</FormLabel>
                   </div>
                 </FormItem>
               )}
             />
-
             <Link href={"/forgot-password"} className="text-link">
               Forget password?
             </Link>
@@ -218,7 +175,7 @@ const AuthForm = ({ type }: AuthFormProps) => {
         </div>
         <Button type="button" onClick={handleLoginWithGoogle} variant={"outline"} className="secondary-btn">
           <Image src={"/assets/icons/google.png"} width={28} height={28} alt="google-icon" />
-          {isLoading ? (
+          {isGoogleLoging ? (
             <>
               <Loader2 className=" animate-spin mr-2" />
               Signing...

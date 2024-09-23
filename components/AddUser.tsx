@@ -9,22 +9,18 @@ import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-const formSchema = z.object({
-  email: z.string().email("Please enter an email valid"),
-  role: z.enum(["user", "admin", "superAdmin"], {
-    message: "Please select a role",
-  }),
-});
 import React, { useState } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Loader2 } from "lucide-react";
 import { addUser } from "@/lib/actions/user.actions";
 import { toast } from "./hooks/use-toast";
+import CustomFormField from "./CustomFormField";
+import { addUserSchema } from "./validations";
 
 const AddUser = ({ onClose, refreshUserList }: { onClose: () => void; refreshUserList: () => void }) => {
   const [isSubmiting, setIsSubmiting] = useState(false);
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof addUserSchema>>({
+    resolver: zodResolver(addUserSchema),
     defaultValues: {
       email: "",
       role: "user",
@@ -32,7 +28,7 @@ const AddUser = ({ onClose, refreshUserList }: { onClose: () => void; refreshUse
   });
 
   // 2. Define a submit handler.
-  async function onSubmit(data: z.infer<typeof formSchema>) {
+  async function onSubmit(data: z.infer<typeof addUserSchema>) {
     try {
       setIsSubmiting(true);
       const res = await addUser(data);
@@ -76,46 +72,9 @@ const AddUser = ({ onClose, refreshUserList }: { onClose: () => void; refreshUse
                 }}
               >
                 <h2 className="text-[#014C46] font-bold text-[16px]">Contact Info</h2>
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-semibold text-[#014C46] text-sm">Email</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Email" {...field} />
-                      </FormControl>
-                      <FormMessage className="text-error-message" />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="role"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-semibold text-[#014C46] text-sm">Permission</FormLabel>
-                      <FormControl>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Select" />
-                          </SelectTrigger>
-                          <SelectContent className="bg-white">
-                            <SelectGroup>
-                              <SelectItem value="user">User</SelectItem>
-                              <SelectItem value="admin">Admin</SelectItem>
-                              <SelectItem value="superAdmin">Super admin</SelectItem>
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage className="text-error-message" />
-                    </FormItem>
-                  )}
-                />
+                <CustomFormField name="email" label="Email" placeholder="Enter your email..." control={form.control} />
+                <CustomFormField name="role" label="Permission" control={form.control} />
               </div>
-              {/* <SheetClose asChild>
-              </SheetClose> */}
               <div className="flex justify-end">
                 <Button type="submit" className="flex gap-1 h-10 py-2 px-5 rounded-[4px]   border border-[#0D062D1A] cursor-pointer text-sm font-medium  hover:bg-blue-500/20 ">
                   {isSubmiting ? (

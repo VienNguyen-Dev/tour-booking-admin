@@ -1,8 +1,10 @@
 "use client";
+import CustomFormField from "@/components/CustomFormField";
 import { toast } from "@/components/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { resetPasswordSchema } from "@/components/validations";
 import { passwordRecover, passwordReset } from "@/lib/actions/user.actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
@@ -12,11 +14,6 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-const formSchema = z.object({
-  password: z.string().min(8).max(25),
-  confirmPassword: z.string().min(8).max(25),
-});
-
 const PasswordReset = () => {
   const [showPassword, setShowPassword] = useState(true);
   const [isResetting, setIsResetting] = useState(false);
@@ -24,14 +21,14 @@ const PasswordReset = () => {
 
   const router = useRouter();
   // 1. Define your form.
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof resetPasswordSchema>>({
+    resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
       password: "",
       confirmPassword: "",
     },
   });
-  async function onSubmit(data: z.infer<typeof formSchema>) {
+  async function onSubmit(data: z.infer<typeof resetPasswordSchema>) {
     const userId = url.get("userId") as string;
     const secret = url.get("secret") as string;
     const { password, confirmPassword } = data;
@@ -109,6 +106,7 @@ const PasswordReset = () => {
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
             name="confirmPassword"

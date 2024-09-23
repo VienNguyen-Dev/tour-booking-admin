@@ -13,21 +13,17 @@ import { Loader2 } from "lucide-react";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { updateUser } from "@/lib/actions/user.actions";
+import CustomFormField from "./CustomFormField";
+import { editProfileSchema } from "./validations";
 
-const formSchema = z.object({
-  avatar: z.any().optional(),
-  email: z.string().email("Please enter a valid email").optional(),
-  phoneNumber: z.string().optional().nullable(),
-  username: z.string().min(3).max(25),
-});
 const Setting = ({ user, onClose, refreshUserList }: { user: User; onClose: () => void; refreshUserList: () => void }) => {
   const [updatedUser, setUpdatedUser] = useState(user);
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [previewImage, setPreviewImage] = useState(user?.avatar);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof editProfileSchema>>({
+    resolver: zodResolver(editProfileSchema),
     defaultValues: {
       avatar: updatedUser?.avatar,
       email: updatedUser?.email,
@@ -36,7 +32,7 @@ const Setting = ({ user, onClose, refreshUserList }: { user: User; onClose: () =
     },
   });
 
-  async function onSubmit(data: z.infer<typeof formSchema>) {
+  async function onSubmit(data: z.infer<typeof editProfileSchema>) {
     //1. lay du lieu tu client => cu va moi
     //2. chuyen du lieu cua avatar tu lieu file sang string
     //3. Update
@@ -101,94 +97,83 @@ const Setting = ({ user, onClose, refreshUserList }: { user: User; onClose: () =
     fileInputRef.current?.click();
   };
   return (
-    <div className="xl:max-w-[400px] xl:max-h-[718px] w-full">
+    <div className="xl:min-w-[400px] xl:max-h-[718px] w-full">
       <Sheet open={true} onOpenChange={onClose}>
-        <SheetContent side={"right"} className=" border-none rounded-xl bg-white flex mt-14 flex-col w-fit p-5 mr-12 overflow-y-auto gap-2">
+        <SheetContent side={"right"} className=" border-none rounded-xl bg-white flex mt-14 flex-col w-fit p-5 mr-12 gap-4">
           <SheetHeader className="flex items-center justify-center border-b p-2 border-gradient-custom">
             <SheetTitle className="text-[#014C46] text-lg xl:text-2xl font-bold h-[30px]">Settings</SheetTitle>
           </SheetHeader>
           {isEditing ? (
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className=" space-y-6">
-                <FormField
-                  control={form.control}
-                  name="avatar"
-                  render={({ field: { value, onChange, ref, ...fieldProps } }) => (
-                    <FormItem>
-                      <FormControl>
-                        <div className="flex justify-center items-center ">
-                          <div onClick={handleAvatarClick} className=" xl:w-[312px] xl:h-[312px]  relative overflow-hidden rounded-full cursor-pointer">
-                            <img src={previewImage} alt={user?.username} width={312} height={312} className=" cursor-pointer rounded-full object-cover w-[312px] h-[312px]" />
+                <div className="rounded-xl border boder-[#014C461A] p-4">
+                  <FormField
+                    control={form.control}
+                    name="avatar"
+                    render={({ field: { value, onChange, ref, ...fieldProps } }) => (
+                      <FormItem>
+                        <FormControl>
+                          <div className="flex justify-center items-center ">
+                            <div onClick={handleAvatarClick} className=" xl:w-[312px] xl:h-[312px]  relative overflow-hidden rounded-full cursor-pointer">
+                              <img src={previewImage} alt={user?.username} width={312} height={312} className=" cursor-pointer rounded-full object-cover w-[312px] h-[312px]" />
 
-                            <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                              <p className="text-white text-xs text-center">Click to change</p>
+                              <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                                <p className="text-white text-xs text-center">Click to change</p>
+                              </div>
                             </div>
+                            <Input
+                              ref={fileInputRef}
+                              className="hidden"
+                              accept="image/*"
+                              onChange={(event) => {
+                                const file = event.target.files && event.target.files[0];
+                                if (file) {
+                                  const reader = new FileReader();
+                                  reader.onloadend = () => {
+                                    setPreviewImage(reader.result as string);
+                                  };
+                                  reader.readAsDataURL(file);
+                                  onChange(file);
+                                }
+                              }}
+                              type="file"
+                              {...fieldProps}
+                            />
                           </div>
-                          <Input
-                            ref={fileInputRef}
-                            className="hidden"
-                            accept="image/*"
-                            onChange={(event) => {
-                              const file = event.target.files && event.target.files[0];
-                              if (file) {
-                                const reader = new FileReader();
-                                reader.onloadend = () => {
-                                  setPreviewImage(reader.result as string);
-                                };
-                                reader.readAsDataURL(file);
-                                onChange(file);
-                              }
-                            }}
-                            type="file"
-                            {...fieldProps}
-                          />
-                        </div>
-                      </FormControl>
-                      <FormMessage className="text-error-message" />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="username"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-semibold text-[#014C46] text-sm">Username</FormLabel>
+                        </FormControl>
+                        <FormMessage className="text-error-message" />
+                      </FormItem>
+                    )}
+                  />
+                  <CustomFormField name="username" placeholder="Username" control={form.control} label="Username" />
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="font-semibold text-[#014C46] text-sm">Email</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Email" {...field} />
+                        </FormControl>
+                        <FormMessage className="text-error-message" />
+                      </FormItem>
+                    )}
+                  />
 
-                      <FormControl>
-                        <Input placeholder="Username" {...field} />
-                      </FormControl>
-                      <FormMessage className="text-error-message" />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-semibold text-[#014C46] text-sm">Email</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Email" {...field} />
-                      </FormControl>
-                      <FormMessage className="text-error-message" />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="phoneNumber"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-semibold text-[#014C46] text-sm">Phone</FormLabel>
-                      <FormControl>
-                        <PhoneInput inputStyle={{ width: "100%" }} placeholder="(+971) 5372948395" country={"ae"} value={field.value || ""} onChange={(value) => field.onChange(value || null)} />
-                      </FormControl>
-                      <FormMessage className="text-error-message" />
-                    </FormItem>
-                  )}
-                />
+                  <FormField
+                    control={form.control}
+                    name="phoneNumber"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="font-semibold text-[#014C46] text-sm">Phone</FormLabel>
+                        <FormControl>
+                          <PhoneInput inputStyle={{ width: "100%" }} placeholder="(+971) 5372948395" country={"ae"} value={field.value || ""} onChange={(value) => field.onChange(value || null)} />
+                        </FormControl>
+                        <FormMessage className="text-error-message" />
+                      </FormItem>
+                    )}
+                  />
+                </div>
                 <div className=" flex justify-end ">
                   {isEditing && (
                     <Button
@@ -215,19 +200,21 @@ const Setting = ({ user, onClose, refreshUserList }: { user: User; onClose: () =
             </Form>
           ) : (
             <>
-              <div className="flex flex-col gap-2 w-full justify-center items-center mt-2 pb-6 ">
-                <div className=" w-full mt-2">
-                  <img src={user?.avatar} alt={user?.username} width={312} height={312} className=" cursor-pointer rounded-full object-cover w-[312px] h-[312px]" />
-                </div>
-                <h1 className="text-[#014C46] text-3xl font-bold">{user.username}</h1>
-                <p className="text-xl font-medium text-[#0D062D] capitalize">{user.role}</p>
-                <div className="flex items-center justify-center gap-1">
-                  <Image src={"/assets/icons/call.png"} alt="call" width={20} height={20} />
-                  <p className=" font-medium text-[16px] text-[#0D062D]">{user.phoneNumber}</p>
-                </div>
-                <div className="flex items-center justify-center gap-1">
-                  <Image src={"/assets/icons/email-white.png"} alt="call" width={20} height={20} />
-                  <p className=" font-medium text-[16px] text-[#0D062D]">{user.email}</p>
+              <div className="rounded-xl border boder-[#014C461A] p-4">
+                <div className="flex flex-col gap-2 w-full justify-center items-center ">
+                  <div className=" w-full mt-2">
+                    <img src={user?.avatar} alt={user?.username} width={312} height={312} className=" cursor-pointer rounded-[150px] object-cover w-[312px] h-[312px]" />
+                  </div>
+                  <h1 className="text-[#014C46] text-3xl font-bold">{user.username}</h1>
+                  <p className="text-xl font-medium text-[#0D062D] capitalize">{user.role}</p>
+                  <div className="flex items-center justify-center gap-1">
+                    <Image src={"/assets/icons/call.png"} alt="call" width={20} height={20} />
+                    <p className=" font-medium text-[16px] text-[#0D062D]">{user.phoneNumber}</p>
+                  </div>
+                  <div className="flex items-center justify-center gap-1">
+                    <Image src={"/assets/icons/email-white.png"} alt="call" width={20} height={20} />
+                    <p className=" font-medium text-[16px] text-[#0D062D]">{user.email}</p>
+                  </div>
                 </div>
               </div>
               <div className="flex justify-end">

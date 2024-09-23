@@ -1,35 +1,31 @@
 "use client";
 import AuthHeader from "@/components/AuthHeader";
+import CustomFormField from "@/components/CustomFormField";
 import Header from "@/components/Header";
 import { toast } from "@/components/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { createPasswordRecovery, forgotPassword } from "@/lib/actions/user.actions";
+import { forgotPasswordSchema } from "@/components/validations";
+import { forgotPassword } from "@/lib/actions/user.actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
-import React, { ChangeEvent, useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-
-const formSchema = z.object({
-  email: z.string().email({
-    message: "Please enter an email valid",
-  }),
-});
 
 const ForgotPassword = () => {
   const [isSending, setIsSending] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof forgotPasswordSchema>>({
+    resolver: zodResolver(forgotPasswordSchema),
     defaultValues: {
       email: "",
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof forgotPasswordSchema>) {
     const { email } = values;
     try {
       setIsSending(true);
@@ -47,7 +43,7 @@ const ForgotPassword = () => {
     }
   }
   return (
-    <div className="flex flex-col my-20 mx-10 items-center flex-1 max-w-[414px] xl:max-w-[616px]">
+    <div className="dialog-forgot-password">
       <Header title="Wellcome to" subtitle="Tour Dubai" />
       <AuthHeader
         title="Reset Password?"
@@ -56,32 +52,22 @@ const ForgotPassword = () => {
       />
       {!isSuccess ? (
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 flex gap-4">
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="font-bold">Email</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter your email.." {...field} />
-                  </FormControl>
-
-                  <FormMessage className="text-error-message " />
-                </FormItem>
-              )}
-            />
-
-            <Button disabled={isSending} type="submit" className="bg-[#014C46] text-white hover:bg-[#014C46]/80">
-              {isSending ? (
-                <>
-                  <Loader2 className=" animate-spin mr-2" />
-                  Sending...
-                </>
-              ) : (
-                "Send"
-              )}
-            </Button>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 flex gap-4 justify-center w-full">
+            <div className="w-full max-w-[445px]">
+              <CustomFormField control={form.control} name="email" label="Email" placeholder="Enter your email..." />
+            </div>
+            <div className="mt-1.5">
+              <Button disabled={isSending} type="submit" className="bg-[#014C46] text-white hover:bg-[#014C46]/80 ">
+                {isSending ? (
+                  <>
+                    <Loader2 className=" animate-spin mr-2" />
+                    Sending...
+                  </>
+                ) : (
+                  "Send"
+                )}
+              </Button>
+            </div>
           </form>
         </Form>
       ) : (

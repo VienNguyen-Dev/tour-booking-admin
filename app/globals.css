@@ -80,7 +80,11 @@ body {
 }
 
 .text-link {
-  @apply text-sm xl:text-xl hover:opacity-80 tracking-[2%] underline font-normal text-[#014C46] capitalize
+  @apply text-sm xl:text-xl hover:opacity-80 tracking-[2%] hover:underline font-normal text-[#014C46] capitalize
+}
+
+.input-class {
+  @apply text-input border-0 border-b rounded-none border-[#014C46] focus-visible:ring-0 focus:ring-transparent
 }
 
 .text-label {
@@ -99,5 +103,10 @@ body {
 
 /* Badge Status */
 
+/* Password */
+.dialog-forgot-password {
+  @apply flex flex-col my-20 mx-10 items-center flex-1 max-w-[414px] xl:max-w-[616px]
+}
 
 /* Redeem and Exchane */
+
