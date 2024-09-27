@@ -120,3 +120,11 @@ export function getInitials(name: string): string {
     .toUpperCase()
     .slice(0, 2);
 }
+
+export const convertToLoweCase = (value: string) => {
+  return value.charAt(0).toLowerCase() + value.slice(1);
+};
+
+export const convertToUpperCase = (value: string) => {
+  return value.charAt(0).toUpperCase() + value.slice(1);
+};

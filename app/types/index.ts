@@ -67,12 +67,50 @@ declare type Customer = {
   loyaltyPoints: number;
 };
 declare type Partner = {
+  $id: string;
+  avatar?: string;
+  tags: string[];
+  type: string;
+  payment: string;
+  redeemInfo?: string;
+  hasAPI?: boolean;
+  rating: number;
   name: string;
   email: string;
   phone: string;
   website?: string;
   pocEmail?: string;
   pocPhone?: string;
+  product: Product;
+};
+
+declare type NewPartnerParams = {
+  avatar?: string;
+  tags: string[];
+  type: string;
+  payment: string;
+  redeemInfo?: string;
+  hasAPI?: boolean;
+  rating: number;
+  name: string;
+  email: string;
+  phone: string;
+  website?: string;
+  pocEmail?: string;
+  pocPhone?: string;
+};
+
+declare type NewProductParams = {
+  name: string;
+  status: "live" | "close";
+  categories: "SPA" | "Adventure Tourism" | "Family Tour";
+  type: "staycation" | "collection" | "default";
+  price: number;
+  url?: string;
+  eVoucher?: string;
+  variantName?: string;
+  variantPrice?: string;
+  variantDescription?: string;
 };
 
 declare type BadgeTypeProps = {

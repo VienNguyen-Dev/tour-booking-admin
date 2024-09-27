@@ -43,7 +43,7 @@ const OrderCard = ({ orders, status }: { orders: Order[]; status: string }) => {
               </div>
             </div>
             <div className="absolute -top-2 left-2 bg-[#014C4633] border-[0.5px] border-[#014C46] py-[4px] px-[10px] max-w-[109px] h-[24px] w-full rounded-[4px] text-[#014C46] font-medium text-sm flex items-center justify-start">
-              {order?.orderId}
+              {order?.$id}
             </div>
           </div>
         </div>

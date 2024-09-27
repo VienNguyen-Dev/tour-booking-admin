@@ -234,6 +234,7 @@ const RedeemDetail = () => {
           <Image src={"/assets/icons/archive.png"} width={20} height={20} alt="archive" />
           Archive
         </Button>
+        {/* This is delete content  */}
         <RemoveDialog />
       </div>
     </section>

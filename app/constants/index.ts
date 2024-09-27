@@ -52,7 +52,10 @@ export const Items = [
 export const menuItems = (type: string) => {
   switch (type) {
     case "action":
-      return [{ label: "View Details" }, { label: "Delete" }];
+      return [
+        { label: "View Details", icon: "/assets/icons/file-pen.svg" },
+        { label: "Delete", icon: "/assets/icons/delete.png" },
+      ];
     case "avatar":
       return [
         {
@@ -69,7 +72,19 @@ export const menuItems = (type: string) => {
         },
       ];
     case "user":
-      return [{ label: "Add" }, { label: "Edit" }, { label: "Block" }, { label: "Delete" }];
+      return [
+        { label: "Add", icon: "/assets/icons/plus.png" },
+        { label: "Edit", icon: "/assets/icons/edit.png" },
+        { label: "Block", icon: "/assets/icons/lock.svg" },
+        { label: "Delete", icon: "/assets/icons/delete.png" },
+      ];
+    case "partner":
+      return [
+        { label: "Add", icon: "/assets/icons/plus.png" },
+        { label: "Edit", icon: "/assets/icons/edit.png" },
+        { label: "Block", icon: "/assets/icons/lock.svg" },
+        { label: "Delete", icon: "/assets/icons/delete.png" },
+      ];
     default:
       return [];
   }

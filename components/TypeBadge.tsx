@@ -11,11 +11,26 @@ const BadgeType = ({ type }: BadgeTypeProps) => {
         "bg-[#28C76F29] text-[#28C76F]": type === "active",
         "bg-[#00000029] text-[#f60202ef]": type === "block",
         "bg-[#F0900029] text-[#F09000]  ": type === "superAdmin",
-        "bg-[#6af30929] text-[#00f020] ": type === "admin",
-        "bg-[#54634a29] text-[#5b5d5b]  ": type === "user",
+        "bg-[#6af30929] text-[#00f020]": type === "admin",
+        "bg-[#54634a29] text-[#5b5d5b]": type === "user",
+        "bg-[#F0900029] text-[#F09000]": type === "adventure",
+        "bg-[#68686829] text-[#686868]": type === "sports",
+        "bg-[#dfd51d29] text-[rgb(104,104,104)]": type === "family",
+        "bg-[#78df1d29] text-[#b8aeae]": type === "family",
+        "bg-[#0de79729] text-[#bab5b5]": type === "nature",
+        "bg-[#178fe629] text-[#dacbcb]": type === "culture",
+        "bg-[#7f15e329] text-[#f1dcdc]": type === "historical",
+        "bg-[#e414ac29] text-[#b3b3b3]": type === "other",
+        "bg-[#316AC129] text-[#316AC1]": type === "email",
+        "bg-[#c1319b29] text-[#9aa5b7]": type === "phone",
+        "bg-[#5ec12429] text-[#989faa]": type === "website",
+        "bg-[#c9561c29] text-[#a07843]": type === "socialMedia",
+        "bg-[#28C76F29] text-[#28C76F] ": type === "monthly",
+        "bg-[#ea3b0a29] text-[#a05042] ": type === "daily",
+        "bg-[#0d56df29] text-[#5b72a3] ": type === "weekly",
       })}
     >
-      {type}
+      {type} {type === "daily" || type === "weekly" || (type === "monthly" && "Payments")}
     </div>
   );
 };

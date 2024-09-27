@@ -155,7 +155,117 @@ export const getColumnsByType = (pageType: string, refreshUserList: () => void):
           },
         },
       ] as ColumnDef<User>[];
+    case "partner":
+      return [
+        {
+          accessorKey: "partnerId",
+          header: () => <div className=" uppercase text-header-data-table">ID #</div>,
+          cell: ({ row }) => {
+            return <div className="text-[#2F2B3D] text-sm text-left font-medium">{row.original.$id}</div>;
+          },
+        },
+        {
+          accessorKey: "info",
+          header: () => <div className=" uppercase text-header-data-table">Partners</div>,
+          cell: ({ row }) => {
+            const partnerInfo = row.original;
+            return (
+              <>
+                <div className="flex gap-2  py-4">
+                  <img src={partnerInfo?.avatar} alt={partnerInfo?.name} width={36} height={36} className=" cursor-pointer rounded-full w-10 h-10" />
+                  <div className="text-[#2F2B3D] flex flex-col  text-left ">
+                    <p className="text-[#2F2B3D] font-medium text-sm capitalize">{partnerInfo.name}</p>
+                    <p className=" lowercase text-[#2F2B3DB2] font-normal text-sm">{partnerInfo.email}</p>
+                  </div>
+                </div>
+              </>
+            );
+          },
+        },
+        {
+          accessorKey: "tags",
+          header: () => <div className=" p-4 uppercase text-header-data-table">Tags</div>,
+          cell: ({ row }) => {
+            const { tags } = row.original;
+            return (
+              <div className="flex flex-col justify-center items-center gap-1">
+                {tags.map((tag: string) => (
+                  <BadgeType type={tag} />
+                ))}
+              </div>
+            );
+          },
+        },
+        {
+          accessorKey: "type",
+          header: () => <div className=" uppercase text-header-data-table">Type</div>,
+          cell: ({ row }) => {
+            return <BadgeType type={row.original.type} />;
+          },
+          filterFn: (row, id, value) => {
+            const partner = row.getValue(id) as { name: string; type: string; tags: string[] };
+            return (
+              partner.name.toLowerCase().includes(value.toLowerCase()) ||
+              partner.tags.map((tag: string) => tag.toLocaleLowerCase().includes(value.toLocaleLowerCase())) ||
+              partner.type.toLocaleLowerCase().includes(value.toLocaleLowerCase())
+            );
+          },
+        },
+        {
+          accessorKey: "payment",
+          header: () => <div className=" uppercase text-header-data-table">Payment Terms</div>,
+          cell: ({ row }) => {
+            return <BadgeType type={row.original.payment} />;
+          },
+        },
+        {
+          accessorKey: "rating",
+          header: () => <div className=" uppercase text-header-data-table">Ratings</div>,
+          cell: ({ row }) => {
+            const { rating } = row.original;
+            return (
+              <div className="flex flex-col justify-center items-center gap-1">
+                <div className="flex justify-center items-center gap-2 px-5 py-[2px] rounded-[100px] bg-white">
+                  <p className="text-[#2F2B3D] text-xs font-bold">{rating.toFixed(1)}</p>
 
+                  {[1, 2, 3, 4, 5].map((star) => {
+                    const starValue = Math.min(Math.max(rating - star + 1, 0), 1);
+                    return (
+                      <div key={star} className="relative">
+                        <SvgIcon path="/assets/icons/star-white.svg" width={16} height={16} color="#FFB849" />
+                        <div className="absolute inset-0 overflow-hidden" style={{ width: `${starValue * 100}%` }}>
+                          <SvgIcon path="/assets/icons/star.svg" width={16} height={16} color="#FFB849" />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          },
+        },
+        {
+          accessorKey: "orders",
+          header: () => <div className=" uppercase text-header-data-table">Orders</div>,
+          cell: ({ row }) => {
+            return (
+              <div className="flex flex-col justify-center items-center gap-1 text-[#2F2B3D] text-xs font-medium">
+                <p>Order: 30</p>
+                <p>Cancel: 2</p>
+                <p>Total: 32</p>
+              </div>
+            );
+          },
+        },
+        {
+          id: "action",
+          enableHiding: false,
+          header: () => <div className=" uppercase text-header-data-table max-sm:hidden">Action</div>,
+          cell: ({ row }) => {
+            return <DropdownMenuAction partner={row.original} partnerId={row.original.$id} type="partner" refreshUserList={refreshUserList} />;
+          },
+        },
+      ] as ColumnDef<Partner>[];
     // case "order":
     // case "customer":
   }

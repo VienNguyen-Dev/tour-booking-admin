@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import Search from "./Search";
 import DataTrigger from "./DataTrigger";
-import { cn } from "@/lib/utils";
-import Image from "next/image";
 import OrderCard from "./OrderCard";
 import UserCard from "./UserCard";
+import PartnerCard from "./PartnerCard";
 interface DataBoardProps {
   value: string;
   data: (Order | User | Product | Partner)[];
@@ -12,7 +11,6 @@ interface DataBoardProps {
 }
 
 const DataBoard = ({ value, data, pageType }: DataBoardProps) => {
-  const orderStatus = ["received", "processing", "booking", "canceled"];
   const [searchTerm, setSearchTerm] = useState("");
 
   const filterData = (item: Order | User | Product | Partner) => {
@@ -59,20 +57,22 @@ const DataBoard = ({ value, data, pageType }: DataBoardProps) => {
             })}
           </div>
         );
-      case "product":
-        return (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-            {(filteredData as Product[]).map((product) => (
-              <ProductCard key={product.name} product={product} />
-            ))}
-          </div>
-        );
+      // case "product":
+      // return (
+      //   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+      //     {(filteredData as Product[]).map((product) => (
+      //       <ProductCard key={product.name} product={product} />
+      //     ))}
+      //   </div>
+      // );
       case "partner":
+        const partnerTypes = ["email", "phone", "website", "social media"];
         return (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-            {(filteredData as Partner[]).map((partner) => (
-              <PartnerCard key={partner.name} partner={partner} />
-            ))}
+            {partnerTypes.map((type) => {
+              const partners = (filteredData as Partner[]).filter((partner) => partner.type === type);
+              return <PartnerCard key={type} partners={partners} type={type} />;
+            })}
           </div>
         );
 

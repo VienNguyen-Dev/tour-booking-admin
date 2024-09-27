@@ -1,9 +1,9 @@
 "use client";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { menuItems } from "@/app/constants";
 import Setting from "./Setting";
 import RatingAndReview from "./RatingAndReview";
@@ -13,7 +13,21 @@ import EditUser from "./EditUser";
 import SvgIcon from "./SvgIcon";
 import DeleteUser from "./DeleteUser";
 
-const DropdownMenuAction = ({ orderId, type, user, refreshUserList }: { orderId?: string; type?: string; user?: User; refreshUserList: () => void }) => {
+const DropdownMenuAction = ({
+  orderId,
+  type,
+  user,
+  refreshUserList,
+  partner,
+  partnerId,
+}: {
+  orderId?: string;
+  type?: string;
+  user?: User;
+  refreshUserList: () => void;
+  partner?: Partner;
+  partnerId?: string;
+}) => {
   const router = useRouter();
   const menuItem = menuItems(type || "user");
   const [isSettingOpen, setIsSettingOpen] = useState(false);
@@ -61,7 +75,11 @@ const DropdownMenuAction = ({ orderId, type, user, refreshUserList }: { orderId?
     }
 
     if (title === "Add") {
-      setIsAddUserOpen(true);
+      if (type === "user") {
+        setIsAddUserOpen(true);
+      } else if (type === "partner") {
+        router.push("/create");
+      }
     }
     if (title === "Edit") {
       setIsEditUserOpen(true);
@@ -112,14 +130,20 @@ const DropdownMenuAction = ({ orderId, type, user, refreshUserList }: { orderId?
           }}
         >
           {type === "action" && <DropdownMenuLabel className="text-[#014C46] border-b border-[#014C461A] ">Action</DropdownMenuLabel>}
-          {menuItem.map((item) => (
-            <div className="flex mr-1 w-full justify-center items-center hover:bg-[#57d7cd]">
-              {type !== "action" && "icon" in item && <Image src={item.icon} width={20} height={20} alt={item.label} className="w-[20px] h-[20px] " />}
-              <DropdownMenuItem onClick={() => handleAction(item.label)} className=" cursor-pointer  border-b border-[#014C461A]   h-[60px] px-[8px] w-full">
-                {`${item.label === "Block" ? updateTitle : item.label}`}
-              </DropdownMenuItem>
-            </div>
-          ))}
+          {menuItem.map((item) => {
+            const iconAction = item.label === "Block" ? `/assets/icons/${updateTitle === "Block" ? "lock.svg" : "unlock.svg"}` : item.icon;
+            return (
+              <div className="flex mr-1 w-full justify-center items-center hover:bg-[#57d7cd]">
+                {/* type !== "action" && */}
+
+                <Image src={iconAction} width={20} height={20} alt={item.label} className="w-[20px] h-[20px] " />
+
+                <DropdownMenuItem onClick={() => handleAction(item.label)} className=" cursor-pointer  border-b border-[#014C461A]   h-[60px] px-[8px] w-full">
+                  {`${item.label === "Block" ? updateTitle : item.label}`}
+                </DropdownMenuItem>
+              </div>
+            );
+          })}
         </DropdownMenuContent>
       </DropdownMenu>
       {isSettingOpen && <Setting user={updatedUser!} onClose={() => setIsSettingOpen(false)} refreshUserList={refreshUserList} />}
