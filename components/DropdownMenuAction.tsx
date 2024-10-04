@@ -11,7 +11,8 @@ import { blockUser, logout } from "@/lib/actions/user.actions";
 import AddUser from "./AddUser";
 import EditUser from "./EditUser";
 import SvgIcon from "./SvgIcon";
-import DeleteUser from "./DeleteUser";
+import DeleteUser from "./DeleteItem";
+import DeleteItem from "./DeleteItem";
 
 const DropdownMenuAction = ({
   orderId,
@@ -165,7 +166,8 @@ const DropdownMenuAction = ({
       {isRatingOpen && <RatingAndReview user={user!} onClose={() => setIsRatingOpen(false)} />}
       {isAddUserOpen && <AddUser onClose={() => setIsAddUserOpen(false)} refreshUserList={refreshUserList} />}
       {isEditUserOpen && <EditUser user={updatedUser} onClose={() => setIsEditUserOpen(false)} onUserUpdate={setUpdatedUser} refreshUserList={refreshUserList} />}
-      {isDelete && <DeleteUser userId={user?.$id!} onClose={() => setIsDelete(false)} />}
+      {isDelete && type === "user" && <DeleteItem type="user" itemId={user?.$id!} onClose={() => setIsDelete(false)} />}
+      {isDelete && type === "partner" && <DeleteItem type="partner" itemId={partner?.$id!} onClose={() => setIsDelete(false)} />}
     </>
   );
 };

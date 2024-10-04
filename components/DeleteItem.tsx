@@ -3,13 +3,18 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { deleteUser } from "@/lib/actions/user.actions";
+import { deletePartner } from "@/lib/actions/partner.actions";
 
-const DeleteUser = ({ userId, onClose }: { userId: string; onClose: () => void }) => {
+const DeleteItem = ({ itemId, onClose, type }: { itemId: string; onClose: () => void; type: string }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async () => {
     try {
-      await deleteUser(userId);
+      if (type === "user") {
+        await deleteUser(itemId);
+      } else if (type === "partner") {
+        await deletePartner(itemId);
+      }
       onClose();
     } catch (error) {
       console.log(error);
@@ -19,7 +24,7 @@ const DeleteUser = ({ userId, onClose }: { userId: string; onClose: () => void }
     <Dialog open onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[600px] bg-white text-[#014C46]">
         <DialogHeader className="text-[#014C46]">
-          <DialogTitle className="text-xl lg:text-2xl font-bold">Are you sure delete this user?</DialogTitle>
+          <DialogTitle className="text-xl lg:text-2xl font-bold">{`Are you sure delete this ${type === "user" ? "user" : "partner"}?`}</DialogTitle>
           <DialogDescription className="text-sm lg:text-xl font-medium">
             {" "}
             This action cannot be undone. This will permanently delete your account and remove your data from our servers.
@@ -38,4 +43,4 @@ const DeleteUser = ({ userId, onClose }: { userId: string; onClose: () => void }
   );
 };
 
-export default DeleteUser;
+export default DeleteItem;
