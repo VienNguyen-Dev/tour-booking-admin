@@ -10,45 +10,18 @@ import React, { useEffect, useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { toast } from "@/components/hooks/use-toast";
 import * as XLSX from "xlsx";
-
-// import { partnerInfoSchema } from "@/components/validations";
+import { partnerInfoSchema } from "@/components/validations";
 import CustomFormField from "@/components/CustomFormField";
-import { convertToLoweCase, convertToUpperCase } from "@/lib/utils";
-import { createNewPartner } from "@/lib/actions/partner.actions";
-import { createNewProduct } from "@/lib/actions/product.actions";
-export const partnerInfoSchema = z.object({
-  partnerName: z.string().min(3, { message: "Name must be at least 3 characters" }).max(50, { message: "Name must be at most 50 characters" }),
-  phoneNumber: z.string().min(10, { message: "Phone number must be at least 10 digits" }).max(15, { message: "Phone number must be at most 15 digits" }),
-  email: z.string().email({ message: "Please enter a valid email" }),
-  website: z.string().max(100, { message: "Website URL must be at most 100 characters" }).optional(),
-  pocEmail: z.string().email({ message: "Please enter a valid email" }).optional(), // Trường này là tùy chọn
-  pocPhone: z.string().min(10, { message: "POC phone number must be at least 10 digits" }).max(15, { message: "POC phone number must be at most 15 digits" }).optional(),
-  redeemInfo: z.string().max(300, { message: "Redeem info must be at most 300 characters" }).optional(),
+import { convertToUpperCase } from "@/lib/utils";
+import { createNewPartner, createNewProduct, getProduct } from "@/lib/actions/partner.actions";
 
-  status: z.string({ required_error: "Please select a status" }),
-  type: z.string({ required_error: "Please select a type" }),
-  partner: z.string({ required_error: "Please select a partner" }),
-  fieldType: z.string({ required_error: "Please select a field type" }),
-
-  // Tách riêng fieldName và value
-  fieldName: z.string({ required_error: "Please select a field name" }),
-  price: z.coerce.number().min(0, { message: "Price must be at least 0" }).max(1000, { message: "Price must be at most 1000" }),
-  // .nonnegative("Price must be a positive number")
-  // .refine((val) => !isNaN(val), { message: "Price must be a valid number" }),
-  name: z.string().min(3).max(100),
-  categories: z.string().min(3).max(25),
-  url: z.string().url(),
-  eVoucher: z.string().min(3).max(6),
-});
 const PartnerInfo = () => {
   const [isSubmiting, setIsSubmiting] = useState(false);
   const [fieldType, setFieldType] = useState("");
   const [fields, setFields] = useState<string[]>([]);
-  console.log(fields);
   const [field, setField] = useState("");
-  const [partnerName, setPartnerName] = useState("");
   const [partner, setPartner] = useState<Partner>({} as Partner);
-
+  const [product, setProduct] = useState({} as Product);
   const form = useForm<z.infer<typeof partnerInfoSchema>>({
     resolver: zodResolver(partnerInfoSchema),
     defaultValues: {
@@ -62,13 +35,12 @@ const PartnerInfo = () => {
       price: 0,
     },
   });
-  console.log(form.formState.errors);
+
   // 2. Define a submit handler.
   async function onSubmit(data: z.infer<typeof partnerInfoSchema>) {
-    console.log("start");
     const partnerData = {
-      tags: ["adventure"],
-      type: data.partner,
+      tags: ["other"],
+      type: data.partner === "social Media" ? "socialMedia" : data.partner,
       payment: "monthly",
       redeemInfo: data.redeemInfo,
       rating: 5,
@@ -78,6 +50,10 @@ const PartnerInfo = () => {
       website: data.website,
       pocEmail: data.pocEmail,
       pocPhone: data.pocPhone,
+      shippingOption: "standard",
+      bookingType: "request",
+      fee: 0,
+      packageType: "other",
     };
 
     const productData = {
@@ -89,36 +65,40 @@ const PartnerInfo = () => {
       status: data.status,
       type: data.type,
     } as Product;
+
     try {
       setIsSubmiting(true);
       const newPartner = await createNewPartner(partnerData);
-      if (newPartner) {
+      if (newPartner && newPartner.$id) {
         toast({
           title: "Success",
           description: "Partner created successfully",
           variant: "default",
         });
         setPartner(newPartner);
-        form.reset();
+        const product = {
+          productData,
+          partnerId: newPartner.$id,
+        };
+        const newProduct = await createNewProduct(product);
+        if (newProduct) {
+          setProduct(newProduct);
+          toast({
+            title: "Success",
+            description: "Product created successfully",
+            variant: "default",
+          });
+          form.reset();
+        } else if (!newProduct) {
+          toast({
+            title: "Error while create a new product",
+            description: "Please try again.",
+            variant: "destructive",
+          });
+        }
       } else if (!newPartner) {
         toast({
           title: "Error while create a new partner",
-          description: "Please try again.",
-          variant: "destructive",
-        });
-      }
-
-      const newProduct = await createNewProduct(productData);
-      if (newProduct) {
-        toast({
-          title: "Success",
-          description: "Product created successfully",
-          variant: "default",
-        });
-        form.reset();
-      } else if (!newProduct) {
-        toast({
-          title: "Error while create a new product",
           description: "Please try again.",
           variant: "destructive",
         });
@@ -161,35 +141,64 @@ const PartnerInfo = () => {
   const handleValueChange = (value: string) => {
     setFieldType(value);
   };
-  //Handle archive
   const formRef = useRef<HTMLDivElement>(null);
+
+  // useEffect(() => {
+  //   const fetchProduct = async () => {
+  //     const res = await getProduct(partnerId);
+  //     if (res) {
+  //       setProduct(res);
+  //     }
+  //   };
+  //   fetchProduct();
+  // }, [partnerId]);
+
   const handleArchive = async () => {
+    const fileName = "Partner_Data.xlsx"; // Tên file lưu trữ dữ liệu
+    let existingData: any[] = [];
+
+    // Kiểm tra xem file Excel đã tồn tại chưa
+    try {
+      const file = await fetch(fileName);
+      const data = await file.arrayBuffer();
+      const workbook = XLSX.read(data, { type: "array" });
+      const worksheet = workbook.Sheets["Partner Info"];
+      existingData = XLSX.utils.sheet_to_json(worksheet);
+    } catch (error) {
+      console.log("File does not exist, creating a new one.");
+    }
+
+    const newPartnerData = {
+      ID: partner.$id,
+      Partner_Name: partner.name,
+      Phone: partner.phone,
+      Email: partner.email,
+      Website: partner.website,
+      POCEmail: partner.pocEmail,
+      POCPhone: partner.pocPhone,
+      Redeem_steps: partner.redeemInfo,
+      Product_name: product?.name,
+      Product_type: product?.type,
+      // Partner: product?.partner,
+      // Price: product?.price,
+      // Product_status: product?.status,
+      // Product_categories: product?.categories,
+      // Product_Url: product?.url,
+      // Product_Voucher: product?.eVoucher,
+    };
+
+    // Nối thêm dữ liệu mới vào dữ liệu hiện có
+    const updatedData = [...existingData, newPartnerData];
+
+    // Tạo workbook và worksheet mới từ dữ liệu đã cập nhật
     const workbook = XLSX.utils.book_new();
-    const worksheet = XLSX.utils.json_to_sheet([
-      {
-        ID: partner.$id,
-        Partner_Name: partner.name,
-        Phone: partner.phone,
-        Email: partner.email,
-        Website: partner.website,
-        POCEmail: partner.pocEmail,
-        POCPhone: partner.pocPhone,
-        Redeem_steps: partner.redeemInfo,
-        Product_name: partner.product?.name,
-        Product_type: partner.product?.type,
-        Partner: partner.product?.partner,
-        Price: partner.product?.price,
-        Product_status: partner.product?.status,
-        Product_categories: partner.product?.categories,
-        Product_Url: partner.product?.url,
-        Product_Voucher: partner.product?.eVoucher,
+    const worksheet = XLSX.utils.json_to_sheet(updatedData);
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Partner Info");
 
-        // Add any other user properties you want to include
-      },
-    ]);
+    // Ghi lại file Excel với dữ liệu đã cập nhật
+    XLSX.writeFile(workbook, fileName);
 
-    XLSX.utils.book_append_sheet(workbook, worksheet, "User Info");
-    XLSX.writeFile(workbook, `${partner.name}_info.xlsx`);
+    console.log("Data has been archived successfully.");
   };
 
   const handleDelete = () => {
@@ -204,7 +213,7 @@ const PartnerInfo = () => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <div className="flex gap-4 justify-between w-full" ref={formRef}>
+        <div className="flex flex-col lg:flex-row gap-4 justify-between w-full" ref={formRef}>
           {/* Partner info */}
 
           <div className="flex flex-col gap-5 w-full xl:max-w-[853px]">
@@ -215,19 +224,20 @@ const PartnerInfo = () => {
               }}
             >
               <h2 className="text-[#014C46] font-bold text-lg xl:text-xl">Partner Additional Info</h2>
-              <div className="flex gap-6">
+              <div className="flex sm:gap-6 flex-col sm:flex-row gap-2">
                 <CustomFormField name="partnerName" label="Name" placeholder="Johan Stevenson" control={form.control} />
                 <CustomFormField name="phoneNumber" label="Phone" placeholder="(+971) 58479365746" control={form.control} />
               </div>
-              <div className="flex gap-6">
+              <div className="flex sm:gap-6 flex-col sm:flex-row gap-2">
                 <CustomFormField name="email" label="Email" placeholder="example@gmail.com" control={form.control} />
                 <CustomFormField name="website" label="Website" placeholder="tourbooking.com" control={form.control} />
               </div>
-              <div className="flex gap-6">
+              <div className="flex sm:gap-6 flex-col sm:flex-row gap-2">
                 <CustomFormField name="pocEmail" label="POC Email" placeholder="example@gmail.com" control={form.control} />
                 <CustomFormField name="pocPhone" label="POC Phone" placeholder="(+971) 87495486385" control={form.control} />
               </div>
             </div>
+            {/* Redeem Info */}
             <div
               className="rounded-xl bg-white w-full p-5 flex flex-col gap-4 h-fit"
               style={{
@@ -235,7 +245,7 @@ const PartnerInfo = () => {
               }}
             >
               <h2 className="text-[#014C46] font-bold text-lg xl:text-xl">Redeem Info</h2>
-              <CustomFormField name="redeemInfo" label="Redeem Steps" control={form.control} />
+              <CustomFormField name="redeemInfo" label="Redeem Steps" control={form.control} placeholder="Steps..." />
             </div>
             <div className="flex gap-4 justify-end">
               <Button onClick={handleArchive} className="flex gap-1 h-10 py-2 px-5 rounded-[4px]  border border-[#0D062D1A] cursor-pointer text-sm font-medium items-center hover:bg-orange-200">
@@ -256,6 +266,7 @@ const PartnerInfo = () => {
           2.2. Cai nao chon roi thi remove khoi select
           2.3 lay gia tri cua cac truong filed type va field name
           */}
+
           <div
             className=" rounded-xl flex flex-col gap-5 w-full xl:max-w-[500px] p-5 h-fit"
             style={{

@@ -3,7 +3,7 @@ import React, { useCallback, useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { menuItems } from "@/app/constants";
 import Setting from "./Setting";
 import RatingAndReview from "./RatingAndReview";
@@ -37,6 +37,7 @@ const DropdownMenuAction = ({
   const [isEditUserOpen, setIsEditUserOpen] = useState(false);
   const [updateTitle, setUpdateTitle] = useState(user?.status === "active" ? "Block" : "Unblock");
   const [isDelete, setIsDelete] = useState(false);
+  const [isBlocked, setIsBlocked] = useState(user?.status !== "active");
 
   const handleLogout = useCallback(async () => {
     try {
@@ -55,6 +56,7 @@ const DropdownMenuAction = ({
         ...updatedUser,
         status: res.status,
       } as User);
+      setIsBlocked(res.status !== "active");
     }
     refreshUserList();
   }, []);
@@ -74,15 +76,19 @@ const DropdownMenuAction = ({
       handleLogout();
     }
 
-    if (title === "Add") {
+    if (title === "Add" && !isBlocked) {
       if (type === "user") {
         setIsAddUserOpen(true);
       } else if (type === "partner") {
-        router.push("/create");
+        router.replace("/admin/partners/create");
       }
     }
-    if (title === "Edit") {
-      setIsEditUserOpen(true);
+    if (title === "Edit" && !isBlocked) {
+      if (type === "user") {
+        setIsEditUserOpen(true);
+      } else if (type === "partner" && partnerId) {
+        router.replace(`/admin/partners/${partnerId}/edit`);
+      }
     }
     if (title === "Block") {
       //
@@ -107,7 +113,7 @@ const DropdownMenuAction = ({
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          {type === "action" || type === "user" ? (
+          {type === "action" || type === "user" || type === "partner" ? (
             <Button variant="ghost" className="h-8 w-8 p-0">
               <Image src={"/assets/icons/action.png"} width={24} height={24} alt="action" />
             </Button>
@@ -133,12 +139,21 @@ const DropdownMenuAction = ({
           {menuItem.map((item) => {
             const iconAction = item.label === "Block" ? `/assets/icons/${updateTitle === "Block" ? "lock.svg" : "unlock.svg"}` : item.icon;
             return (
-              <div className="flex mr-1 w-full justify-center items-center hover:bg-[#57d7cd]">
+              <div
+                className={` flex mr-1 w-full justify-center items-center ${
+                  isBlocked && (item.label === "Edit" || item.label === "Add") ? "cursor-not-allowed bg-slate-300 opacity-50" : "hover:bg-[#57d7cd]"
+                } `}
+              >
                 {/* type !== "action" && */}
 
                 <Image src={iconAction} width={20} height={20} alt={item.label} className="w-[20px] h-[20px] " />
 
-                <DropdownMenuItem onClick={() => handleAction(item.label)} className=" cursor-pointer  border-b border-[#014C461A]   h-[60px] px-[8px] w-full">
+                <DropdownMenuItem
+                  onClick={() => handleAction(item.label)}
+                  className={` cursor-pointer  border-b border-[#014C461A]   h-[60px] px-[8px] w-full ${
+                    isBlocked && (item.label === "Edit" || item.label === "Add") ? "cursor-not-allowed" : "hover:bg-[#57d7cd]"
+                  } `}
+                >
                   {`${item.label === "Block" ? updateTitle : item.label}`}
                 </DropdownMenuItem>
               </div>

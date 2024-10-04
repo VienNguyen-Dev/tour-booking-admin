@@ -4,12 +4,13 @@ import * as XLSX from "xlsx";
 import React, { useEffect, useState } from "react";
 import TabsData from "@/components/DataTabs";
 import SvgIcon from "@/components/SvgIcon";
+import { getAllPartners } from "@/lib/actions/partner.actions";
 
 const Partner = () => {
   const [data, setData] = useState([]);
   const refreshUserList = async () => {
-    // const res = await getAllUsers();
-    // setData(res);
+    const res = await getAllPartners();
+    setData(res);
   };
 
   // Initial fetch of user data

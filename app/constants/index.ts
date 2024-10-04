@@ -42,12 +42,30 @@ export const TypesData = [
   },
 ];
 
-export const Items = [
-  { title: "total orders", icon: "/assets/icons/bag.png" },
-  { title: "total redeems", icon: "/assets/icons/gift.png" },
-  { title: "email", icon: "/assets/icons/email.png" },
-  { title: "contact no", icon: "/assets/icons/contact.png" },
-];
+export const Items = (pageType: string) => {
+  switch (pageType) {
+    case "redeem":
+      return [
+        { title: "total orders", icon: "/assets/icons/bag.png" },
+        { title: "total redeems", icon: "/assets/icons/gift.png" },
+        { title: "email", icon: "/assets/icons/email.png" },
+        { title: "contact no", icon: "/assets/icons/contact.png" },
+      ];
+    case "partner":
+      return [
+        { title: "total orders", icon: "/assets/icons/bag.png" },
+        { title: "total redeems", icon: "/assets/icons/gift.png" },
+        { title: "email", icon: "/assets/icons/email.png" },
+        { title: "contact no", icon: "/assets/icons/contact.png" },
+        { title: "fee", icon: "/assets/icons/fee.png" },
+        { title: "poc contact", icon: "/assets/icons/poc-contact.png" },
+        { title: "website", icon: "/assets/icons/link.png" },
+      ];
+
+    default:
+      return [];
+  }
+};
 
 export const menuItems = (type: string) => {
   switch (type) {

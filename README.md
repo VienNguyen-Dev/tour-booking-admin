@@ -35,3 +35,8 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 link figma: https://www.figma.com/design/t1iD7LhPy32QmdEDchdTOA/Admin-Ithara-design-(Copy)?t=gXXOfxu4NkWfG9Kb-0
+
+- Inprove:
+
+* CẦN PHẢI CẢI THIỆN SELECT TRONG TAOJ PRODUCT MỚI
+* Cac bang co the loc nhieu column khac nhau

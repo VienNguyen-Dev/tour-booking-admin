@@ -311,7 +311,6 @@ export async function blockUser({ userId, action }: BlockUserParams) {
     const res = await database.updateDocument(DATABASE_ID!, USER_COLLECTIONS_ID!, userId, {
       status,
     });
-    console.log(res);
     return parseStringfy(res);
   } catch (error) {
     console.log("Error while block user", error);

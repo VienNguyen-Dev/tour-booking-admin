@@ -40,8 +40,16 @@ const CustomFormField = <T extends z.ZodTypeAny>({ control, name, label, placeho
       ? ["Email", "Phone", "Website", "Social Media"]
       : name === "role"
       ? ["User", "Admin", "Super Admin"]
+      : name === "tags"
+      ? ["Adventure", "Culture", "Sports", "Family", "Other", "Nature", "Historical"]
+      : name === "payment"
+      ? ["Daily", "Weekly", "Monthly"]
+      : name === "shippingOption"
+      ? ["Standard", "Express", "Same day", "Overnight"]
+      : name === "bookingType"
+      ? ["Instant", "Request", "Scheduled", "On-demand", "Pre-booking"]
       : [];
-  const nameValues = ["role", "status", "type", "partner", "fieldName", "fieldType"];
+  const nameValues = ["role", "status", "type", "partner", "fieldName", "fieldType", "tags", "bookingType", "payment", "shippingOption"];
   const types = ["name", "categories", "eVoucher", "url", "price"];
 
   return (
@@ -54,12 +62,14 @@ const CustomFormField = <T extends z.ZodTypeAny>({ control, name, label, placeho
           <FormControl>
             {!nameValues.includes(name) ? (
               <div className="relative">
-                {name === "redeemInfo" ? (
+                {name === "redeemInfo" || name === "notes" ? (
                   <Textarea placeholder={placeholder} {...field} />
                 ) : name !== "phoneNumber" || types.includes(name) ? (
                   <Input
-                    type={typeInput || (typeInput && typeInput === "password" && showPassword ? "password" : "text")}
-                    min={1}
+                    type={typeInput && (typeInput && typeInput === "password" && showPassword ? "password" : "text")}
+                    min={0}
+                    step={0.1}
+                    max={100}
                     placeholder={placeholder}
                     {...field}
                     className={`${type === "auth" ? "input-class" : ""} `}

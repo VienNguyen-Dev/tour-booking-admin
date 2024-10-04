@@ -17,23 +17,23 @@ import CustomFormField from "@/components/CustomFormField";
 const TestPage = () => {
   const router = useRouter();
   const formSchema = z.object({
-    test: z.string(),
+    partner: z.string(),
   });
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      test: "",
+      partner: "",
     },
   });
   // 2. Define a submit handler.
   async function onSubmit(data: z.infer<typeof formSchema>) {
-    console.log(data);
+    // console.log(data);
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-1 lg:space-y-2 2xl:space-y-6">
-        <CustomFormField name="test" control={form.control} />
+        <CustomFormField name="partner" label="Partners" control={form.control} placeholder="Select a partner type" />
         <Button type="submit" variant={"outline"} className="secondary-btn">
           <Image src={"/assets/icons/google.png"} width={28} height={28} alt="google-icon" />
           Click

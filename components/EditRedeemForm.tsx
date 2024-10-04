@@ -33,15 +33,15 @@ const EditRedeemForm = ({ order }: { order: Order }) => {
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
     alert("You need to handle form edit redeem and exchange");
-    console.log(values);
+    // console.log(values);
   }
-
+  const items = Items("redeem");
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 ">
         <div className="flex gap-4 flex-col sm:w-full max-w-[663px] max-sm:min-w-[300px]">
           <div className="flex flex-col gap-4 ">
-            {Items.map((item) => {
+            {items.map((item) => {
               const subtitle = item.title === "total orders" ? "2000" : item.title === "total redeems" ? "1000" : item.title === "email" ? order.customer.email : order.customer.contact;
               return <CardItem title={item.title} icon={item.icon} subtitle={subtitle!} />;
             })}

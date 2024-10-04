@@ -39,51 +39,45 @@ export const addUserSchema = z.object({
   }),
 });
 
-// export const partnerInfoSchema = z.object({
-//   partnerName: z.string().min(3, { message: "Name must be at least 3 characters" }).max(50, { message: "Name must be at most 50 characters" }),
-//   phoneNumber: z.string().min(10, { message: "Phone number must be at least 10 digits" }).max(15, { message: "Phone number must be at most 15 digits" }),
-//   email: z.string().email({ message: "Please enter a valid email" }),
-//   website: z.string().max(100, { message: "Website URL must be at most 100 characters" }).optional(),
-//   pocEmail: z.string().email({ message: "Please enter a valid email" }).optional(), // Trường này là tùy chọn
-//   pocPhone: z.string().min(10, { message: "POC phone number must be at least 10 digits" }).max(15, { message: "POC phone number must be at most 15 digits" }).optional(),
-//   redeemInfo: z.string().max(300, { message: "Redeem info must be at most 300 characters" }).optional(),
-//   product: z.object({
-//     status: z.enum(["live", "close"], {
-//       errorMap: () => ({ message: "Status must be 'live' or 'close'" }),
-//     }),
-//     type: z.enum(["staycation", "collection", "default"], {
-//       errorMap: () => ({ message: "Type must be 'staycation', 'collection', or 'default'" }),
-//     }),
-//     partner: z.enum(["email", "phone", "website", "socialMedia"], {
-//       errorMap: () => ({ message: "Partner must be one of 'email', 'phone', 'website', or 'socialMedia'" }),
-//     }),
-//     fieldType: z.enum(["number", "text"], {
-//       errorMap: () => ({ message: "Field type must be 'number' or 'text'" }),
-//     }),
+export const partnerInfoSchema = z.object({
+  partnerName: z.string().min(3, { message: "Name must be at least 3 characters" }).max(50, { message: "Name must be at most 50 characters" }),
+  phoneNumber: z.string().min(10, { message: "Phone number must be at least 10 digits" }).max(15, { message: "Phone number must be at most 15 digits" }),
+  email: z.string().email({ message: "Please enter a valid email" }),
+  website: z.string().max(100, { message: "Website URL must be at most 100 characters" }).optional(),
+  pocEmail: z.string().email({ message: "Please enter a valid email" }).optional(), // Trường này là tùy chọn
+  pocPhone: z.string().min(10, { message: "POC phone number must be at least 10 digits" }).max(15, { message: "POC phone number must be at most 15 digits" }).optional(),
+  redeemInfo: z.string().max(500, { message: "Redeem info must be at most 500 characters" }).optional(),
 
-//     // Tách riêng fieldName và value
-//     fieldName: z.enum(["name", "price", "categories", "url", "eVoucher"]),
-//     value: z.union([
-//       z.object({
-//         fieldName: z.literal("name"),
-//         value: z.string().min(1, { message: "Name is required" }).max(50),
-//       }),
-//       z.object({
-//         fieldName: z.literal("price"),
-//         value: z.number().min(1, { message: "Price must be at greater 0" }).max(10000, { message: "Price must not be greater than 10000" }),
-//       }),
-//       z.object({
-//         fieldName: z.literal("categories"),
-//         value: z.array(z.string()).min(1, { message: "At least one category is required" }),
-//       }),
-//       z.object({
-//         fieldName: z.literal("url"),
-//         value: z.string().url({ message: "Invalid URL format" }),
-//       }),
-//       z.object({
-//         fieldName: z.literal("eVoucher"),
-//         value: z.string().min(1, { message: "eVoucher is required" }),
-//       }),
-//     ]),
-//   }),
-// });
+  status: z.string({ required_error: "Please select a status" }),
+  type: z.string({ required_error: "Please select a type" }),
+  partner: z.string({ required_error: "Please select a partner" }),
+  fieldType: z.string({ required_error: "Please select a field type" }),
+
+  // Tách riêng fieldName và value
+  fieldName: z.string({ required_error: "Please select a field name" }),
+  price: z.coerce.number().min(0, { message: "Price must be at least 0" }).max(1000, { message: "Price must be at most 1000" }),
+  // .nonnegative("Price must be a positive number")
+  // .refine((val) => !isNaN(val), { message: "Price must be a valid number" }),
+  name: z.string().min(3).max(100),
+  categories: z.string().min(3).max(25),
+  url: z.string().url(),
+  eVoucher: z.string().min(6).max(6),
+});
+
+export const editPartnerSchema = z.object({
+  address: z.string().min(3, { message: "Address must be at least 3 characters" }).max(200, { message: "Name must be at most 200 characters" }).optional(),
+  city: z.string().min(3, { message: "City must be at least 3 characters" }).max(25, { message: "City must be at most 25 characters" }).optional(),
+  country: z.string().min(3, { message: "Country must be at least 3 characters" }).max(25, { message: "Country must be at most 25 characters" }).optional(),
+  packageType: z.string().min(3, { message: "Package type must be at least 3 characters" }).max(25, { message: "Package type must be at most 25 characters" }).optional(),
+  shippingOption: z.string({ required_error: "Please select a option" }).optional(),
+  tags: z.array(z.string()).nonempty("You must select at least one tag").optional(),
+  redeemInfo: z.string().max(500, { message: "Redeem info must be at most 500 characters" }).optional(),
+  bookingType: z.string({ required_error: "Please select a booking type" }).optional(),
+  payment: z.string({ required_error: "Please select a Payment Term" }).optional(),
+  notes: z.string().max(300, { message: "Notes  must be at most 300 characters" }).optional(),
+  email: z.string().email({ message: "Please enter a valid email" }).optional(),
+  phoneNumber: z.string().min(10, { message: "Phone number must be at least 10 digits" }).max(15, { message: "Phone number must be at most 15 digits" }).optional(),
+  website: z.string().max(100, { message: "Website URL must be at most 100 characters" }).optional(),
+  pocEmail: z.string().email({ message: "Please enter a valid email" }).optional(),
+  fee: z.coerce.number().min(0, { message: "Fee must be at least 0" }).max(100, { message: "Price must be at most 100" }).optional(),
+});

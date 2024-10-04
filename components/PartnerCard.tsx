@@ -3,8 +3,11 @@ import React from "react";
 import BadgeType from "./TypeBadge";
 import { cn } from "@/lib/utils";
 import SvgIcon from "./SvgIcon";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const PartnerCard = ({ partners, type }: { partners: Partner[]; type: string }) => {
+  const router = useRouter();
   return (
     <div className="flex flex-col gap-3 w-full">
       <div
@@ -21,8 +24,8 @@ const PartnerCard = ({ partners, type }: { partners: Partner[]; type: string }) 
         <div className="flex flex-col gap-4 mt-2">
           <div className="relative w-full h-fit rounded-md shadow-[#2F2B3D24] shadow-md bg-white p-3">
             <div className="flex flex-col border-b-[1.5px] border-[#38414A] mt-[14px] py-2  gap-2">
-              <div className="flex gap-2">
-                <SvgIcon path="/assets/icons/user-regular.svg" width={20} height={20} />
+              <div className="flex gap-2 items-center">
+                <SvgIcon path="/assets/icons/user-regular.svg" width={20} height={20} color="blue" />
                 <div className="flex flex-col gap-1">
                   <h1 className="text-xl font-bold">{partner.name}</h1>
                   <p className="text-sm font-normal text-gray-500">{partner.email}</p>
@@ -55,16 +58,20 @@ const PartnerCard = ({ partners, type }: { partners: Partner[]; type: string }) 
                 <BadgeType type={partner.type} />
               </div>
             </div>
-            <div className="absolute -top-2 left-2 bg-[#014C4633] border-[0.5px] border-[#014C46] py-[4px] px-[10px] max-w-[109px] h-[24px] w-full rounded-[4px] text-[#014C46] font-medium text-sm flex items-center justify-start">
+            <div className="absolute -top-2 left-2 bg-[#014C4633] border-[0.5px] border-[#014C46] py-[4px] px-[10px] min-w-[109px] h-[24px] w-fit rounded-[4px] text-[#014C46] font-medium text-sm flex items-center justify-start">
               {partner.$id}
             </div>
           </div>
         </div>
       ))}
-      <div className="flex justify-start items-center gap-2  w-full cursor-pointer p-2 border border-[#D0D5DDB2] shadow-[#00000040]  hover:bg-black/20 rounded-[6px]">
+      <Link
+        href={"/admin/partners/create"}
+        target="_blank"
+        className="flex justify-start items-center gap-2  w-full cursor-pointer p-2 border border-[#D0D5DDB2] shadow-[#00000040]  hover:bg-black/20 rounded-[6px]"
+      >
         <Image src={"/assets/icons/plus.png"} alt="plus" width={24} height={24} />
         <p className="text-[#2F2B3D] text-[14px] font-medium capitalize">Add new item</p>
-      </div>
+      </Link>
     </div>
   );
 };

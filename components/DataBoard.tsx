@@ -8,9 +8,10 @@ interface DataBoardProps {
   value: string;
   data: (Order | User | Product | Partner)[];
   pageType: string;
+  refreshUserList: () => void;
 }
 
-const DataBoard = ({ value, data, pageType }: DataBoardProps) => {
+const DataBoard = ({ value, data, pageType, refreshUserList }: DataBoardProps) => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const filterData = (item: Order | User | Product | Partner) => {
@@ -53,7 +54,7 @@ const DataBoard = ({ value, data, pageType }: DataBoardProps) => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {userStatus.map((status) => {
               const users = (filteredData as User[]).filter((user) => user.status === status);
-              return <UserCard key={status} users={users} status={status} />;
+              return <UserCard key={status} users={users} status={status} refreshUserList={refreshUserList!} />;
             })}
           </div>
         );
@@ -70,7 +71,7 @@ const DataBoard = ({ value, data, pageType }: DataBoardProps) => {
         return (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
             {partnerTypes.map((type) => {
-              const partners = (filteredData as Partner[]).filter((partner) => partner.type === type);
+              const partners = (filteredData as Partner[]).filter((partner) => (partner.type === "socialMedia" ? "social media" : partner.type) === type);
               return <PartnerCard key={type} partners={partners} type={type} />;
             })}
           </div>

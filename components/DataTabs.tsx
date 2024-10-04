@@ -10,7 +10,7 @@ import { getColumnsByType } from "@/app/orders/columns";
 interface DataTabsProps {
   data: (Order | User | Product | Partner)[];
   pageType: string;
-  refreshUserList: () => void;
+  refreshUserList?: () => void;
 }
 
 const TabsData = ({ data, pageType, refreshUserList }: DataTabsProps) => {
@@ -26,7 +26,7 @@ const TabsData = ({ data, pageType, refreshUserList }: DataTabsProps) => {
   };
   const [updateData, setupdateData] = useState(data);
 
-  const columns = getColumnsByType(pageType, refreshUserList);
+  const columns = getColumnsByType(pageType, refreshUserList!);
 
   useEffect(() => {
     const getData = () => {
@@ -51,9 +51,9 @@ const TabsData = ({ data, pageType, refreshUserList }: DataTabsProps) => {
       {TypesData.map((type, index: number) => (
         <TabsContent key={index} value={type.title}>
           {type.title === "board" ? (
-            <DataBoard value={triggerValue} data={updateData} pageType={pageType} />
+            <DataBoard value={triggerValue} data={updateData} pageType={pageType} refreshUserList={refreshUserList!} />
           ) : (
-            <DataTable columns={columns} data={updateData} value={triggerValue} pageType={pageType} refreshUserList={refreshUserList} />
+            <DataTable columns={columns} data={updateData} value={triggerValue} pageType={pageType} refreshUserList={refreshUserList!} />
           )}
         </TabsContent>
       ))}

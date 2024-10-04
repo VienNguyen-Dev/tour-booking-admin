@@ -81,7 +81,14 @@ declare type Partner = {
   website?: string;
   pocEmail?: string;
   pocPhone?: string;
-  product: Product;
+  address?: string;
+  city?: string;
+  country?: string;
+  packageType?: string;
+  shippingOption?: string;
+  notes: string;
+  fee: number;
+  bookingType?: string;
 };
 
 declare type NewPartnerParams = {
@@ -98,9 +105,40 @@ declare type NewPartnerParams = {
   website?: string;
   pocEmail?: string;
   pocPhone?: string;
+  address?: string;
+  city?: string;
+  country?: string;
+  packageType?: string;
+  shippingOption?: string;
+  bookingType?: string;
+  notes?: string;
+  fee?: number;
 };
 
-declare type NewProductParams = {
+declare type UpdateDataParams = {
+  tags: string[];
+  type: string;
+  payment: string;
+  redeemInfo?: string;
+  email: string;
+  phone: string;
+  website?: string;
+  pocEmail?: string;
+  pocPhone?: string;
+  address?: string;
+  city?: string;
+  country?: string;
+  packageType?: string;
+  shippingOption?: string;
+  bookingType?: string;
+  notes: string;
+  fee: number;
+};
+declare type UpdatePartnerParams = {
+  partner?: Partner;
+  formData: FormData;
+};
+declare type ProductDataParams = {
   name: string;
   status: "live" | "close";
   categories: "SPA" | "Adventure Tourism" | "Family Tour";
@@ -111,6 +149,10 @@ declare type NewProductParams = {
   variantName?: string;
   variantPrice?: string;
   variantDescription?: string;
+};
+declare type NewProductParams = {
+  productData: ProductDataParams;
+  partnerId: string;
 };
 
 declare type BadgeTypeProps = {

@@ -1,8 +1,6 @@
 import Image from "next/image";
 import React from "react";
 import { Input } from "./ui/input";
-import { Table } from "@tanstack/react-table";
-import { DataTableProps } from "./DataTable";
 
 interface SearchProps {
   value: string;

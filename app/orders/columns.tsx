@@ -33,27 +33,24 @@ export const getColumnsByType = (pageType: string, refreshUserList: () => void):
           header: () => <div className=" p-4 uppercase text-header-data-table">Customer</div>,
           cell: ({ row }) => {
             return (
-              <>
-                <div className="p-4 flex flex-col  text-left ">
-                  <p className="text-[#2F2B3D] font-medium text-[15px] capitalize">{row.original.customer.name}</p>
-                  <p className=" lowercase text-[#2F2B3DB2] font-normal text-sm">{row.original.customer.email}</p>
-                </div>
-              </>
+              <div className="p-4 flex flex-col  text-left ">
+                <p className="text-[#2F2B3D] font-medium text-[15px] capitalize">{row.original.customer.name}</p>
+                <p className=" lowercase text-[#2F2B3DB2] font-normal text-sm">{row.original.customer.email}</p>
+              </div>
             );
           },
         },
         {
           accessorKey: "product",
+          id: "product",
           header: () => <div className=" uppercase text-header-data-table">Product</div>,
           cell: ({ row }) => {
             const product = row.original.product;
             return (
-              <>
-                <div className=" text-left flex flex-col  gap-2">
-                  <BadgeType type={product.type} />
-                  <p className=" capitalize text-[#2F2B3D] text-sm font-normal">{product.name}</p>
-                </div>
-              </>
+              <div className=" text-left flex flex-col  gap-2">
+                <BadgeType type={product.type} />
+                <p className=" capitalize text-[#2F2B3D] text-sm font-normal">{product.name}</p>
+              </div>
             );
           },
           filterFn: (row, id, value) => {
@@ -68,22 +65,20 @@ export const getColumnsByType = (pageType: string, refreshUserList: () => void):
           cell: ({ row }) => {
             const statusColor = row.original.status;
             return (
-              <>
-                <div className="flex items-center gap-2">
-                  <SvgIcon
-                    path="/assets/icons/status-point.svg"
-                    width={8}
-                    height={8}
-                    color={cn("", {
-                      "#2F2B3D": statusColor === "received",
-                      "#F09000": statusColor === "processing",
-                      "#005928": statusColor === "booking",
-                      "#CF0000": statusColor === "canceled",
-                    })}
-                  />
-                  <p className=" font-normal text-sm text-black capitalize">{row.original.status}</p>
-                </div>
-              </>
+              <div className="flex items-center gap-2">
+                <SvgIcon
+                  path="/assets/icons/status-point.svg"
+                  width={8}
+                  height={8}
+                  color={cn("", {
+                    "#2F2B3D": statusColor === "received",
+                    "#F09000": statusColor === "processing",
+                    "#005928": statusColor === "booking",
+                    "#CF0000": statusColor === "canceled",
+                  })}
+                />
+                <p className=" font-normal text-sm text-black capitalize">{row.original.status}</p>
+              </div>
             );
           },
         },
@@ -108,21 +103,21 @@ export const getColumnsByType = (pageType: string, refreshUserList: () => void):
         },
         {
           accessorKey: "username",
+          id: "username",
           header: () => <div className=" uppercase text-header-data-table">Users</div>,
           cell: ({ row }) => {
             const user = row.original;
             return (
-              <>
-                <div className="flex gap-2  py-4">
-                  <img src={user?.avatar} alt={user?.username} width={36} height={36} className=" cursor-pointer rounded-full w-10 h-10" />
-                  <div className="text-[#2F2B3D] flex flex-col  text-left ">
-                    <p className="text-[#2F2B3D] font-medium text-sm capitalize">{row.original.username}</p>
-                    <p className=" lowercase text-[#2F2B3DB2] font-normal text-sm">{row.original.email}</p>
-                  </div>
+              <div className="flex gap-2  py-4">
+                <img src={user?.avatar} alt={user?.username} width={36} height={36} className=" cursor-pointer rounded-full w-10 h-10" />
+                <div className="text-[#2F2B3D] flex flex-col  text-left ">
+                  <p className="text-[#2F2B3D] font-medium text-sm capitalize">{row.original.username}</p>
+                  <p className=" lowercase text-[#2F2B3DB2] font-normal text-sm">{row.original.email}</p>
                 </div>
-              </>
+              </div>
             );
           },
+          filterFn: "includesString",
         },
         {
           accessorKey: "status",
@@ -130,6 +125,7 @@ export const getColumnsByType = (pageType: string, refreshUserList: () => void):
           cell: ({ row }) => {
             return <BadgeType type={row.original.status} />;
           },
+          filterFn: "includesString",
         },
         {
           accessorKey: "role",
@@ -137,14 +133,11 @@ export const getColumnsByType = (pageType: string, refreshUserList: () => void):
           cell: ({ row }) => {
             return <BadgeType type={row.original.role} />;
           },
-          filterFn: (row, id, value) => {
-            const user = row.getValue(id) as { username: string; status: string; role: string };
-            return (
-              user.username.toLowerCase().includes(value.toLowerCase()) ||
-              user.status.toLocaleLowerCase().includes(value.toLocaleLowerCase()) ||
-              user.role.toLocaleLowerCase().includes(value.toLocaleLowerCase())
-            );
-          },
+          filterFn: "includesString",
+          // filterFn: (row, id, value) => {
+          //   const user = row.getValue(id) as { username: string };
+          //   return user.username.toLowerCase().includes(value.toLowerCase());
+          // },
         },
         {
           id: "action",
@@ -165,22 +158,21 @@ export const getColumnsByType = (pageType: string, refreshUserList: () => void):
           },
         },
         {
-          accessorKey: "info",
+          accessorKey: "name",
           header: () => <div className=" uppercase text-header-data-table">Partners</div>,
           cell: ({ row }) => {
             const partnerInfo = row.original;
             return (
-              <>
-                <div className="flex gap-2  py-4">
-                  <img src={partnerInfo?.avatar} alt={partnerInfo?.name} width={36} height={36} className=" cursor-pointer rounded-full w-10 h-10" />
-                  <div className="text-[#2F2B3D] flex flex-col  text-left ">
-                    <p className="text-[#2F2B3D] font-medium text-sm capitalize">{partnerInfo.name}</p>
-                    <p className=" lowercase text-[#2F2B3DB2] font-normal text-sm">{partnerInfo.email}</p>
-                  </div>
+              <div className="flex gap-2  py-4">
+                <img src={partnerInfo?.avatar} alt={partnerInfo?.name} width={36} height={36} className=" cursor-pointer rounded-full w-10 h-10" />
+                <div className="text-[#2F2B3D] flex flex-col  text-left ">
+                  <p className="text-[#2F2B3D] font-medium text-sm capitalize">{partnerInfo.name}</p>
+                  <p className=" lowercase text-[#2F2B3DB2] font-normal text-sm">{partnerInfo.email}</p>
                 </div>
-              </>
+              </div>
             );
           },
+          filterFn: "includesString",
         },
         {
           accessorKey: "tags",
@@ -198,17 +190,10 @@ export const getColumnsByType = (pageType: string, refreshUserList: () => void):
         },
         {
           accessorKey: "type",
+          id: "type",
           header: () => <div className=" uppercase text-header-data-table">Type</div>,
           cell: ({ row }) => {
             return <BadgeType type={row.original.type} />;
-          },
-          filterFn: (row, id, value) => {
-            const partner = row.getValue(id) as { name: string; type: string; tags: string[] };
-            return (
-              partner.name.toLowerCase().includes(value.toLowerCase()) ||
-              partner.tags.map((tag: string) => tag.toLocaleLowerCase().includes(value.toLocaleLowerCase())) ||
-              partner.type.toLocaleLowerCase().includes(value.toLocaleLowerCase())
-            );
           },
         },
         {
@@ -224,22 +209,20 @@ export const getColumnsByType = (pageType: string, refreshUserList: () => void):
           cell: ({ row }) => {
             const { rating } = row.original;
             return (
-              <div className="flex flex-col justify-center items-center gap-1">
-                <div className="flex justify-center items-center gap-2 px-5 py-[2px] rounded-[100px] bg-white">
-                  <p className="text-[#2F2B3D] text-xs font-bold">{rating.toFixed(1)}</p>
+              <div className="flex  items-center gap-2  rounded-[100px] bg-white">
+                <p className="text-[#2F2B3D] text-xs font-bold">{rating.toFixed(1)}</p>
 
-                  {[1, 2, 3, 4, 5].map((star) => {
-                    const starValue = Math.min(Math.max(rating - star + 1, 0), 1);
-                    return (
-                      <div key={star} className="relative">
-                        <SvgIcon path="/assets/icons/star-white.svg" width={16} height={16} color="#FFB849" />
-                        <div className="absolute inset-0 overflow-hidden" style={{ width: `${starValue * 100}%` }}>
-                          <SvgIcon path="/assets/icons/star.svg" width={16} height={16} color="#FFB849" />
-                        </div>
+                {[1, 2, 3, 4, 5].map((star) => {
+                  const starValue = Math.min(Math.max(rating - star + 1, 0), 1);
+                  return (
+                    <div key={star} className="relative">
+                      <SvgIcon path="/assets/icons/star-white.svg" width={16} height={16} color="#FFB849" />
+                      <div className="absolute inset-0 overflow-hidden" style={{ width: `${starValue * 100}%` }}>
+                        <SvgIcon path="/assets/icons/star.svg" width={16} height={16} color="#FFB849" />
                       </div>
-                    );
-                  })}
-                </div>
+                    </div>
+                  );
+                })}
               </div>
             );
           },

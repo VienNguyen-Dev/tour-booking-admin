@@ -1,6 +1,6 @@
 "use client";
 
-import { ColumnDef, ColumnFiltersState, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, useReactTable } from "@tanstack/react-table";
+import { ColumnDef, ColumnFiltersState, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, useReactTable, SortingState, getSortedRowModel } from "@tanstack/react-table";
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "./ui/button";
@@ -10,6 +10,8 @@ import DataTrigger from "./DataTrigger";
 import { useRouter } from "next/navigation";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import SvgIcon from "./SvgIcon";
+import { convertToUpperCase } from "@/lib/utils";
+import React from "react";
 
 export interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -21,6 +23,7 @@ export interface DataTableProps<TData, TValue> {
 
 export function DataTable<TData, TValue>({ columns, data, value, pageType }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [sorting, setSorting] = React.useState<SortingState>([]);
   const [page, setPage] = useState(1);
   const table = useReactTable({
     data,
@@ -29,12 +32,16 @@ export function DataTable<TData, TValue>({ columns, data, value, pageType }: Dat
     getPaginationRowModel: getPaginationRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
     state: {
+      sorting,
       columnFilters,
     },
+
     initialState: {
       pagination: {
-        pageSize: pageType === "redeem" ? 4 : pageType === "user" ? 6 : 0, //con xu ly tiep voi cac pageType khac
+        pageSize: pageType === "redeem" ? 4 : pageType === "user" ? 6 : 5, //con xu ly tiep voi cac pageType khac
       },
     },
   });
@@ -43,17 +50,26 @@ export function DataTable<TData, TValue>({ columns, data, value, pageType }: Dat
   router.push(`?page=${page}`);
   const paramsUrl = new URLSearchParams();
   paramsUrl.set("page", page.toString());
-
-  //  if (columns) {
-  //   onDataChange()
-  //  }
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-6">
         <div className="flex justify-between">
           <Search
-            value={((table.getColumn("product")?.getFilterValue() as string) || (table.getColumn("username")?.getFilterValue() as string)) ?? ""}
-            onChange={(value: string) => table.getColumn("product")?.setFilterValue(value) || table.getColumn("username")?.setFilterValue(value)}
+            value={
+              pageType === "redeem"
+                ? (table.getColumn("product")?.getFilterValue() as string)
+                : pageType === "user"
+                ? (table.getColumn("username")?.getFilterValue() as string)
+                : pageType === "partner"
+                ? (table.getColumn("name")?.getFilterValue() as string)
+                : ""
+            }
+            onChange={(value: string) => {
+              pageType === "redeem" && table.getColumn("product")?.setFilterValue(value);
+              pageType === "user" && table.getColumn("username")?.setFilterValue(value);
+
+              pageType === "partner" && table.getColumn("name")?.setFilterValue(value);
+            }}
           />
           <div className="flex items-center justify-center gap-2">
             <DataTrigger value={value} />
@@ -80,7 +96,7 @@ export function DataTable<TData, TValue>({ columns, data, value, pageType }: Dat
             )}
           </div>
         </div>
-        {pageType && <h1 className="text-lg font-bold text-[#2F2B3DE5] capitalize w-full mb-2">Recent devices</h1>}
+        {pageType && <h1 className="text-lg font-bold text-[#2F2B3DE5] capitalize w-full mb-2">{`Recent ${convertToUpperCase(pageType)}s`}</h1>}
         <div className="rounded-md border shadow-md shadow-[rgba(47, 43, 61, 0.14)]">
           <Table>
             <TableHeader className="bg-[#014C4633] p-4 h-[44px]">

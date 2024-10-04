@@ -7,8 +7,8 @@ import html2canvas from "html2canvas-pro";
 import { cn, formatDateTime } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import EditRedeemForm from "../components/EditRedeemForm";
-import RemoveDialog from "../components/RemoveDialog";
+import EditRedeemForm from "../../../../components/EditRedeemForm";
+import RemoveDialog from "../../../../components/RemoveDialog";
 
 const RedeemDetail = () => {
   const { orderId } = useParams();

@@ -1,9 +1,12 @@
+"use client";
 import Image from "next/image";
 import React from "react";
 import BadgeType from "./TypeBadge";
 import { cn, formatDateTime } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 const OrderCard = ({ orders, status }: { orders: Order[]; status: string }) => {
+  const router = useRouter();
   return (
     <div className="flex flex-col gap-3 w-full">
       <div
@@ -48,7 +51,10 @@ const OrderCard = ({ orders, status }: { orders: Order[]; status: string }) => {
           </div>
         </div>
       ))}
-      <div className="flex justify-start items-center gap-2  w-full cursor-pointer p-2 border border-[#D0D5DDB2] shadow-[#00000040]  hover:bg-black/20 rounded-[6px]">
+      <div
+        className="flex justify-start items-center gap-2  w-full cursor-pointer p-2 border border-[#D0D5DDB2] shadow-[#00000040]  hover:bg-black/20 rounded-[6px]"
+        onClick={() => router.push("/admin/redeems-exchange/new")}
+      >
         <Image src={"/assets/icons/plus.png"} alt="plus" width={24} height={24} />
         <p className="text-[#2F2B3D] text-[14px] font-medium capitalize">Add new item</p>
       </div>

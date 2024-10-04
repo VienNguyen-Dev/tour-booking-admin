@@ -2,8 +2,9 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import React, { useState } from "react";
 import BadgeType from "./TypeBadge";
+import AddUser from "./AddUser";
 
-const UserCard = ({ users, status }: { users: User[]; status: string }) => {
+const UserCard = ({ users, status, refreshUserList }: { users: User[]; status: string, refreshUserList: () => void }) => {
   const [isAddUser, setIsAddUser] = useState(false);
 
   return (
@@ -43,6 +44,7 @@ const UserCard = ({ users, status }: { users: User[]; status: string }) => {
         <Image src={"/assets/icons/plus.png"} alt="plus" width={24} height={24} />
         <p className="text-[#2F2B3D] text-[14px] font-medium capitalize">Add new item</p>
       </div>
+      {isAddUser && <AddUser onClose={() => setIsAddUser(false)} refreshUserList={refreshUserList} />}
     </div>
   );
 };
