@@ -1,6 +1,7 @@
 "use server";
 
 async function handleSuccessfulPayment(productId: string, customerEmail: string) {
+  const eVoucher = "DEV2024";
   try {
     await sendEmail({
       to: customerEmail,
