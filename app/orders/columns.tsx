@@ -207,10 +207,10 @@ export const getColumnsByType = (pageType: string, refreshUserList: () => void):
               <div className="flex  items-center gap-2  rounded-[100px] bg-white">
                 <p className="text-[#2F2B3D] text-xs font-bold">{rating.toFixed(1)}</p>
 
-                {[1, 2, 3, 4, 5].map((star) => {
+                {[1, 2, 3, 4, 5].map((star, index) => {
                   const starValue = Math.min(Math.max(rating - star + 1, 0), 1);
                   return (
-                    <div key={star} className="relative">
+                    <div key={index} className="relative">
                       <SvgIcon path="/assets/icons/star-white.svg" width={16} height={16} color="#FFB849" />
                       <div className="absolute inset-0 overflow-hidden" style={{ width: `${starValue * 100}%` }}>
                         <SvgIcon path="/assets/icons/star.svg" width={16} height={16} color="#FFB849" />

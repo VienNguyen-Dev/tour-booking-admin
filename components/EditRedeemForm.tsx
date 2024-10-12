@@ -41,9 +41,9 @@ const EditRedeemForm = ({ order }: { order: Order }) => {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 ">
         <div className="flex gap-4 flex-col sm:w-full max-w-[663px] max-sm:min-w-[300px]">
           <div className="flex flex-col gap-4 ">
-            {items.map((item) => {
+            {items.map((item, index) => {
               const subtitle = item.title === "total orders" ? "2000" : item.title === "total redeems" ? "1000" : item.title === "email" ? order.customer?.email : order.customer?.contact;
-              return <CardItem title={item.title} icon={item.icon} subtitle={subtitle!} />;
+              return <CardItem key={index} title={item.title} icon={item.icon} subtitle={subtitle!} />;
             })}
           </div>
           <div
