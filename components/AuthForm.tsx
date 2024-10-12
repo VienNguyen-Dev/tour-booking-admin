@@ -116,25 +116,10 @@ const AuthForm = ({ type }: AuthFormProps) => {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 lg:space-y-4 xl:space-y-6 2xl:space-y-8">
         <AuthHeader title={`${type === "sign-in" ? " Please Log In to your account and start a" : "Create a new account and start a"} `} subtitle="“New Journey”." />
-        {type === "sign-up" && (
-          <CustomFormField name="username" control={form.control} label="Username" placeholder="Enter your username..." type="auth" />
+        {type === "sign-up" && <CustomFormField name="username" control={form.control} label="Username" placeholder="Leo Messi" type="auth" />}
+        <CustomFormField name="email" control={form.control} label="Email" placeholder="messi@gmail.com" type="auth" />
 
-          //   name="username"
-          //   render={({ field }) => (
-          //     <FormItem>
-          //       <FormLabel className="text-form-label">Username</FormLabel>
-          //       <FormControl>
-          //         <Input {...field} className="text-input border-0 border-b rounded-none border-[#014C46]  focus-visible:ring-0 focus:ring-transparent" />
-          //       </FormControl>
-
-          //       <FormMessage className="text-error-message" />
-          //     </FormItem>
-          //   )}
-          // />
-        )}
-        <CustomFormField name="email" control={form.control} label="Email" placeholder="Enter your email..." type="auth" />
-
-        <CustomFormField name="password" control={form.control} label="Password" placeholder="Enter your password..." type="auth" />
+        <CustomFormField name="password" control={form.control} label="Password" placeholder="********" type="auth" />
 
         {/* Neu remember: 
     1. show email and password

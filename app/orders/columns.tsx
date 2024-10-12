@@ -258,7 +258,7 @@ export const getColumnsByType = (pageType: string, refreshUserList: () => void):
           accessorKey: "date",
           header: () => <div className=" uppercase text-header-data-table">Date</div>,
           cell: ({ row }) => {
-            return <div className="flex gap-2  py-4">{row.original.date}</div>;
+            return <div className="flex gap-2  py-4">{formatDateTime(new Date(row.original.date)).dateTime}</div>;
           },
         },
         {
@@ -283,7 +283,6 @@ export const getColumnsByType = (pageType: string, refreshUserList: () => void):
               </div>
             );
           },
-          filterFn: "includesString",
         },
         {
           accessorKey: "price",
@@ -302,10 +301,15 @@ export const getColumnsByType = (pageType: string, refreshUserList: () => void):
         },
         {
           accessorKey: "product",
+          id: "product",
           header: () => <div className=" uppercase text-header-data-table">Product</div>,
           cell: ({ row }) => {
             const { product } = row.original;
             return <p>{product.name}</p>;
+          },
+          filterFn: (row, id, value) => {
+            const product = row.getValue(id) as { name: string; type: string };
+            return product.name.toLowerCase().includes(value.toLowerCase());
           },
         },
         {
