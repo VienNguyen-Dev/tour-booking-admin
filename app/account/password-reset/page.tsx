@@ -5,11 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { resetPasswordSchema } from "@/components/validations";
-import { passwordRecover, passwordReset } from "@/lib/actions/user.actions";
+import { passwordReset } from "@/lib/actions/user.actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -17,7 +17,6 @@ import * as z from "zod";
 const PasswordReset = () => {
   const [showPassword, setShowPassword] = useState(true);
   const [isResetting, setIsResetting] = useState(false);
-  const url = useSearchParams();
 
   const router = useRouter();
   // 1. Define your form.
@@ -29,8 +28,9 @@ const PasswordReset = () => {
     },
   });
   async function onSubmit(data: z.infer<typeof resetPasswordSchema>) {
-    const userId = url.get("userId") as string;
-    const secret = url.get("secret") as string;
+    // const userId = url.get("userId") as string;
+    // const secret = url.get("secret") as string;
+    const { userId, secret } = useParams()!;
     const { password, confirmPassword } = data;
     if (password !== confirmPassword) {
       toast({
@@ -45,8 +45,8 @@ const PasswordReset = () => {
       setIsResetting(true);
 
       const res = await passwordReset({
-        userId,
-        secret,
+        userId: userId as string,
+        secret: secret as string,
         password,
       });
       if (res) {

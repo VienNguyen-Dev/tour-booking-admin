@@ -63,14 +63,14 @@ export function DataTable<TData, TValue>({ columns, data, value, pageType }: Dat
                 : pageType === "partner"
                 ? (table.getColumn("name")?.getFilterValue() as string)
                 : pageType === "order"
-                ? (table.getColumn("name")?.getFilterValue() as string)
+                ? (table.getColumn("product")?.getFilterValue() as string)
                 : ""
             }
             onChange={(value: string) => {
               pageType === "redeem" && table.getColumn("product")?.setFilterValue(value);
               pageType === "user" && table.getColumn("username")?.setFilterValue(value);
               pageType === "partner" && table.getColumn("name")?.setFilterValue(value);
-              pageType === "order" && table.getColumn("customer")?.setFilterValue(value);
+              pageType === "order" && table.getColumn("product")?.setFilterValue(value);
             }}
           />
           <div className="flex items-center justify-center gap-2">

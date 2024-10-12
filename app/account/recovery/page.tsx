@@ -8,17 +8,14 @@ import { passwordRecover } from "@/lib/actions/user.actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 const PasswordRecovery = () => {
-  // const [password, setPassword] = useState("");
-  // const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(true);
   const [isResetting, setIsResetting] = useState(false);
-  const url = useSearchParams();
 
   const router = useRouter();
   // 1. Define your form.
@@ -30,8 +27,7 @@ const PasswordRecovery = () => {
     },
   });
   async function onSubmit(data: z.infer<typeof passwordRecoverySchema>) {
-    const userId = url.get("userId") as string;
-    const secret = url.get("secret") as string;
+    const { userId, secret } = useParams();
     const { password, confirmPassword } = data;
     if (password !== confirmPassword) {
       toast({
@@ -46,8 +42,8 @@ const PasswordRecovery = () => {
       setIsResetting(true);
 
       const res = await passwordRecover({
-        userId,
-        secret,
+        userId: userId as string,
+        secret: secret as string,
         password,
       });
       if (res) {
