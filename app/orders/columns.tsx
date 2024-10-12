@@ -283,6 +283,7 @@ export const getColumnsByType = (pageType: string, refreshUserList: () => void):
               </div>
             );
           },
+          filterFn: "includesString",
         },
         {
           accessorKey: "price",

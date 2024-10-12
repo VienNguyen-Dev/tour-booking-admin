@@ -4,14 +4,14 @@ import Image from "next/image";
 import * as XLSX from "xlsx";
 import React, { useEffect, useState } from "react";
 import TabsData from "@/components/DataTabs";
-import { getData } from "@/lib/actions/order.actions";
+import { getAllOrders, getData } from "@/lib/actions/order.actions";
 import SvgIcon from "@/components/SvgIcon";
 
 const RedeemsBoard = () => {
   const [data, setData] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
-      const res = await getData();
+      const res = await getAllOrders();
       setData(res);
     };
     fetchData();
