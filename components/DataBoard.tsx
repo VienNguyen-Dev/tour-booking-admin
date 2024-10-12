@@ -13,13 +13,12 @@ interface DataBoardProps {
 
 const DataBoard = ({ value, data, pageType, refreshUserList }: DataBoardProps) => {
   const [searchTerm, setSearchTerm] = useState("");
-
   const filterData = (item: Order | User | Product | Partner) => {
     const searchLower = searchTerm.toLowerCase();
     switch (pageType) {
       case "redeem":
-        const order = item as Order;
-        return order.product.name.toLowerCase().includes(searchLower) || order.product.type.toLowerCase().includes(searchLower);
+        const redeemOrder = item as Order;
+        return redeemOrder.product.name.toLowerCase().includes(searchLower) || redeemOrder.product.type.toLowerCase().includes(searchLower);
       case "user":
         const user = item as User;
         return user.username.toLowerCase().includes(searchLower) || user.email.toLowerCase().includes(searchLower);
@@ -29,6 +28,9 @@ const DataBoard = ({ value, data, pageType, refreshUserList }: DataBoardProps) =
       case "partner":
         const partner = item as Partner;
         return partner.name.toLowerCase().includes(searchLower) || partner.email.toLowerCase().includes(searchLower);
+      case "order":
+        const order = item as Order;
+        return order.status.toLowerCase().includes(searchLower) || order.type.toLowerCase().includes(searchLower);
       default:
         return [];
     }
@@ -39,10 +41,10 @@ const DataBoard = ({ value, data, pageType, refreshUserList }: DataBoardProps) =
   const renderCards = () => {
     switch (pageType) {
       case "redeem":
-        const orderStatus = ["received", "processing", "booking", "canceled", "voucher", "refunded"];
+        const orderRedeemStatus = ["received", "processing", "booking", "canceled", "voucher", "refunded"];
         return (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-            {orderStatus.map((status) => {
+            {orderRedeemStatus.map((status) => {
               const orders = (filteredData as Order[]).filter((order) => order.status === status);
               return <OrderCard key={status} orders={orders} status={status} />;
             })}
@@ -76,7 +78,16 @@ const DataBoard = ({ value, data, pageType, refreshUserList }: DataBoardProps) =
             })}
           </div>
         );
-
+      case "order":
+        const orderStatus = ["booking", "received", "processing", "all vouchers sent", "refunded", "canceled"];
+        return (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+            {orderStatus.map((status) => {
+              const orders = (filteredData as Order[]).filter((order) => order.status === status);
+              return <OrderCard key={status} orders={orders} status={status} />;
+            })}
+          </div>
+        );
       default:
         return null;
     }

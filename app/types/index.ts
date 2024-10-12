@@ -63,7 +63,7 @@ declare type Customer = {
   orderTotal: number;
   contact?: string;
   shippingInfo: ShippingInfo;
-  customerType: "Royal Customer" | "Repeat Customer" | "New Customer";
+  customerType: "Royalty" | "Repeated" | "First-Time";
   loyaltyPoints: number;
 };
 declare type Partner = {
@@ -159,6 +159,7 @@ declare type BadgeTypeProps = {
   type: string;
 };
 declare type Product = {
+  $id: string;
   name: string;
   status: "live" | "close";
   categories: "SPA" | "Adventure Tourism" | "Family Tour";
@@ -180,9 +181,18 @@ declare type Order = {
   $id: string;
   date: string;
   customer: Customer;
+  partner?: Partner;
   product: Product;
   status: "received" | "processing" | "booking" | "canceled" | "Voucher Sent" | "refunded";
   type: "E-Voucher" | "Physical";
+};
+
+declare type CreateNewOrderParams = {
+  date: string;
+  price: number;
+  type: string;
+  status: string;
+  payment: string;
 };
 declare interface SvgIconProps {
   width: number;

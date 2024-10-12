@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import CardItem from "./CardItem";
-import { Items } from "@/app/constants";
+import { bookingStatus, Items } from "@/app/constants";
 import Image from "next/image";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 
@@ -23,8 +23,8 @@ const EditRedeemForm = ({ order }: { order: Order }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: order.customer.email,
-      contact: order.customer.contact,
+      email: order.customer?.email,
+      contact: order.customer?.contact,
       orderStatus: order.status,
       bookingStatus: "booked",
     },
@@ -42,7 +42,7 @@ const EditRedeemForm = ({ order }: { order: Order }) => {
         <div className="flex gap-4 flex-col sm:w-full max-w-[663px] max-sm:min-w-[300px]">
           <div className="flex flex-col gap-4 ">
             {items.map((item) => {
-              const subtitle = item.title === "total orders" ? "2000" : item.title === "total redeems" ? "1000" : item.title === "email" ? order.customer.email : order.customer.contact;
+              const subtitle = item.title === "total orders" ? "2000" : item.title === "total redeems" ? "1000" : item.title === "email" ? order.customer?.email : order.customer?.contact;
               return <CardItem title={item.title} icon={item.icon} subtitle={subtitle!} />;
             })}
           </div>
@@ -73,18 +73,17 @@ const EditRedeemForm = ({ order }: { order: Order }) => {
                 <FormItem>
                   <FormLabel className="font-semibold text-[#014C46] text-sm">Booking Status</FormLabel>
                   <FormControl>
-                    <Select>
+                    <Select defaultValue={order.partner?.bookingType}>
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select a booking status" />
                       </SelectTrigger>
                       <SelectContent className="bg-white">
                         <SelectGroup>
-                          <SelectItem value="est">Eastern Standard Time (EST)</SelectItem>
-                          <SelectItem value="cst">Central Standard Time (CST)</SelectItem>
-                          <SelectItem value="mst">Mountain Standard Time (MST)</SelectItem>
-                          <SelectItem value="pst">Pacific Standard Time (PST)</SelectItem>
-                          <SelectItem value="akst">Alaska Standard Time (AKST)</SelectItem>
-                          <SelectItem value="hst">Hawaii Standard Time (HST)</SelectItem>
+                          {bookingStatus.map((type, index) => (
+                            <SelectItem key={index} value={type} className=" capitalize">
+                              {type}
+                            </SelectItem>
+                          ))}
                         </SelectGroup>
                       </SelectContent>
                     </Select>

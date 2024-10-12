@@ -11,7 +11,6 @@ import { blockUser, logout } from "@/lib/actions/user.actions";
 import AddUser from "./AddUser";
 import EditUser from "./EditUser";
 import SvgIcon from "./SvgIcon";
-import DeleteUser from "./DeleteItem";
 import DeleteItem from "./DeleteItem";
 
 const DropdownMenuAction = ({
@@ -21,11 +20,13 @@ const DropdownMenuAction = ({
   refreshUserList,
   partner,
   partnerId,
+  order,
 }: {
   orderId?: string;
   type?: string;
   user?: User;
-  refreshUserList: () => void;
+  order?: Order;
+  refreshUserList?: () => void | undefined;
   partner?: Partner;
   partnerId?: string;
 }) => {
@@ -59,12 +60,15 @@ const DropdownMenuAction = ({
       } as User);
       setIsBlocked(res.status !== "active");
     }
-    refreshUserList();
+    if (refreshUserList) {
+      refreshUserList();
+    }
   }, []);
 
   const handleAction = (title: string) => {
-    if (title === "View Details") router.push(`/admin/redeems-exchanges/${orderId}`);
+    if (title === "View Details" && type === "redeem") router.push(`/admin/redeems-exchanges/${orderId}`);
 
+    if (title === "View Details" && type === "order") router.push(`/admin/orders/${orderId}`);
     if (title === "Setting") {
       setIsSettingOpen(true);
     }
@@ -114,7 +118,7 @@ const DropdownMenuAction = ({
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          {type === "action" || type === "user" || type === "partner" ? (
+          {type === "action" || type === "user" || type === "partner" || type === "order" ? (
             <Button variant="ghost" className="h-8 w-8 p-0">
               <Image src={"/assets/icons/action.png"} width={24} height={24} alt="action" />
             </Button>
@@ -162,10 +166,10 @@ const DropdownMenuAction = ({
           })}
         </DropdownMenuContent>
       </DropdownMenu>
-      {isSettingOpen && <Setting user={updatedUser!} onClose={() => setIsSettingOpen(false)} refreshUserList={refreshUserList} />}
+      {isSettingOpen && <Setting user={updatedUser!} onClose={() => setIsSettingOpen(false)} refreshUserList={refreshUserList!} />}
       {isRatingOpen && <RatingAndReview user={user!} onClose={() => setIsRatingOpen(false)} />}
-      {isAddUserOpen && <AddUser onClose={() => setIsAddUserOpen(false)} refreshUserList={refreshUserList} />}
-      {isEditUserOpen && <EditUser user={updatedUser} onClose={() => setIsEditUserOpen(false)} onUserUpdate={setUpdatedUser} refreshUserList={refreshUserList} />}
+      {isAddUserOpen && <AddUser onClose={() => setIsAddUserOpen(false)} refreshUserList={refreshUserList!} />}
+      {isEditUserOpen && <EditUser user={updatedUser} onClose={() => setIsEditUserOpen(false)} onUserUpdate={setUpdatedUser} refreshUserList={refreshUserList!} />}
       {isDelete && type === "user" && <DeleteItem type="user" itemId={user?.$id!} onClose={() => setIsDelete(false)} />}
       {isDelete && type === "partner" && <DeleteItem type="partner" itemId={partner?.$id!} onClose={() => setIsDelete(false)} />}
     </>

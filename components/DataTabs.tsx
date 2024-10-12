@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { TypesData } from "@/app/constants";
 import { DataTable } from "./DataTable";
@@ -39,6 +39,8 @@ const TabsData = ({ data, pageType, refreshUserList }: DataTabsProps) => {
           return data as Product[];
         case "partner":
           return data as Partner[];
+        case "order":
+          return data as Order[];
         default:
           return [];
       }

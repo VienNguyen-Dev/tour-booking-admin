@@ -11,6 +11,10 @@ import "react-phone-input-2/lib/style.css";
 import { Textarea } from "./ui/textarea";
 import { convertToLoweCase } from "@/lib/utils";
 import { SelectLabel } from "@radix-ui/react-select";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { addMonths } from "date-fns/addMonths";
+import { addDays } from "date-fns/addDays";
 
 interface CustomFormFieldProps<T extends z.ZodTypeAny> {
   control: Control<z.infer<T>>;
@@ -20,9 +24,11 @@ interface CustomFormFieldProps<T extends z.ZodTypeAny> {
   type?: string;
   fieldType?: string;
   onValueChange?: (value: string) => void;
+  dateRange?: [Date | null, Date | null];
+  onDateRangeChange?: (dateRange: [Date | null, Date | null]) => void;
 }
 
-const CustomFormField = <T extends z.ZodTypeAny>({ control, name, label, placeholder, type, fieldType, onValueChange }: CustomFormFieldProps<T>) => {
+const CustomFormField = <T extends z.ZodTypeAny>({ control, name, label, placeholder, type, fieldType, onValueChange, dateRange, onDateRangeChange }: CustomFormFieldProps<T>) => {
   const [showPassword, setShowPassword] = useState(true);
   const typeInput = name === "password" ? "password" : name === "email" || name === "pocEmail" ? "email" : name === "price" ? "number" : "text";
   const items: string[] =
@@ -51,6 +57,14 @@ const CustomFormField = <T extends z.ZodTypeAny>({ control, name, label, placeho
       : [];
   const nameValues = ["role", "status", "type", "partner", "fieldName", "fieldType", "tags", "bookingType", "payment", "shippingOption"];
   const types = ["name", "categories", "eVoucher", "url", "price"];
+  const [selectedRange, setSelectedRange] = useState<[Date | null, Date | null]>(dateRange || [null, null]);
+
+  const handleDateRangeChange = (range: [Date | null, Date | null]) => {
+    setSelectedRange(range);
+    if (onDateRangeChange) {
+      onDateRangeChange(range);
+    }
+  };
 
   return (
     <FormField
@@ -60,7 +74,27 @@ const CustomFormField = <T extends z.ZodTypeAny>({ control, name, label, placeho
         <FormItem className="w-full">
           <FormLabel className="text-form-label">{label}</FormLabel>
           <FormControl>
-            {!nameValues.includes(name) ? (
+            {name === "dateRange" ? (
+              <DatePicker
+                selected={selectedRange[0]}
+                onChange={(update: [Date | null, Date | null]) => handleDateRangeChange(update)}
+                startDate={selectedRange[0]!}
+                endDate={selectedRange[1]!}
+                selectsRange
+                selectsEnd
+                selectsStart
+                dateFormat="Pp"
+                showDateSelect
+                showIcon
+                maxDate={addMonths(new Date(), 5)}
+                showDisabledMonthNavigation
+                minDate={new Date()}
+                className="border border-gray-400 rounded-md w-full max-w-[300px] ml-2 p-4"
+                placeholderText="Select date"
+                // excludeDates={[addDays(new Date(), 1), addDays(new Date(), 5)]}
+                selectsDisabledDaysInRange
+              />
+            ) : !nameValues.includes(name) ? (
               <div className="relative">
                 {name === "redeemInfo" || name === "notes" ? (
                   <Textarea placeholder={placeholder} {...field} />

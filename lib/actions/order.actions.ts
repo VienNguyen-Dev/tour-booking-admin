@@ -1,4 +1,9 @@
 "use server";
+const { PARTNER_COLLECTIONS_ID, DATABASE_ID, ORDER_COLLECTIONS_ID } = process.env;
+import { ID, Query } from "node-appwrite";
+import { createAdminClient } from "../appwrite.config";
+import { parseStringfy } from "../utils";
+import { getProductById } from "./product.actions";
 
 export async function getData() {
   const data = [
@@ -254,3 +259,53 @@ export async function getData() {
   ];
   return data;
 }
+
+export const createNewOrder = async (orderData: CreateNewOrderParams) => {
+  try {
+    const { database } = await createAdminClient();
+    const newOrder = await database.createDocument(DATABASE_ID!, ORDER_COLLECTIONS_ID!, ID.unique(), orderData);
+    if (!newOrder) throw Error;
+    return parseStringfy(newOrder);
+  } catch (error) {
+    console.log("Error while create a new order", error);
+  }
+};
+
+export const getAllOrders = async () => {
+  try {
+    const { database } = await createAdminClient();
+    const orders = await database.listDocuments(DATABASE_ID!, ORDER_COLLECTIONS_ID!, [Query.orderDesc("$createdAt")]);
+
+    return parseStringfy(orders.documents);
+  } catch (error) {
+    console.log("Error while get all orders", error);
+  }
+};
+
+declare type UpdateOrderStatusParams = {
+  orderId: string;
+  status: string;
+};
+export const updateOrderStatus = async ({ orderId, status }: UpdateOrderStatusParams) => {
+  try {
+    const { database } = await createAdminClient();
+    const result = await database.updateDocument(DATABASE_ID!, ORDER_COLLECTIONS_ID!, orderId, {
+      status,
+    });
+    return parseStringfy(result);
+  } catch (error) {
+    console.log("Error while update order status", error);
+  }
+};
+
+export const getOrderById = async (orderId: string) => {
+  try {
+    const { database } = await createAdminClient();
+    const order = await database.listDocuments(DATABASE_ID!, ORDER_COLLECTIONS_ID!, [Query.equal("$id", [orderId])]);
+
+    if (!order) throw Error;
+    return parseStringfy(order);
+  } catch (error) {
+    console.log("Error while get order by Id", error);
+  }
+};

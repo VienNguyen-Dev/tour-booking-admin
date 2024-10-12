@@ -103,7 +103,15 @@ export const menuItems = (type: string) => {
         { label: "Block", icon: "/assets/icons/lock.svg" },
         { label: "Delete", icon: "/assets/icons/delete.png" },
       ];
+    case "order":
+      return [
+        { label: "View Details", icon: "/assets/icons/file-pen.svg" },
+        { label: "Cancel", icon: "/assets/icons/ban-solid.svg" },
+        { label: "Delete", icon: "/assets/icons/delete.png" },
+      ];
     default:
       return [];
   }
 };
+
+export const bookingStatus = ["confirmed", "booked", "completed"];

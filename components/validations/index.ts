@@ -81,3 +81,9 @@ export const editPartnerSchema = z.object({
   pocEmail: z.string().email({ message: "Please enter a valid email" }).optional(),
   fee: z.coerce.number().min(0, { message: "Fee must be at least 0" }).max(100, { message: "Price must be at most 100" }).optional(),
 });
+
+export const orderInfoSchema = z.object({
+  price: z.coerce.number().min(1),
+  type: z.string({ required_error: "Please select a status" }),
+  status: z.string({ required_error: "Please select a status" }),
+});

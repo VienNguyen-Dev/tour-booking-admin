@@ -70,6 +70,10 @@ export const rememberMe = async ({ email, password, remember }: SignInParams) =>
 export async function login({ email, password, remember }: SignInParams) {
   try {
     const { account, database } = await createAdminClient();
+    const existingUser = await database.listDocuments(DATABASE_ID!, USER_COLLECTIONS_ID!, [Query.equal("email", email)]);
+    if (existingUser.documents[0].status === "block") {
+      throw new Error("Your account have been block. Please contact admin to unblock. Thanks.");
+    }
     const rememberMeValue = cookies().get("rememberMe")?.value;
 
     if (remember) {
@@ -92,7 +96,7 @@ export async function login({ email, password, remember }: SignInParams) {
       const userId = userInfo.$id;
       const user = await database.updateDocument(DATABASE_ID!, USER_COLLECTIONS_ID!, userId, { remember });
       if (!user) {
-        console.log("Error while update user");
+        throw new Error("Fail to update your account");
       }
       return parseStringfy(user);
     }

@@ -3,9 +3,8 @@
 import DropdownMenuAction from "@/components/DropdownMenuAction";
 import SvgIcon from "@/components/SvgIcon";
 import BadgeType from "@/components/TypeBadge";
-import { cn, formatDateTime } from "@/lib/utils";
+import { cn, formatAmount, formatDateTime } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
-import { useState } from "react";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -134,10 +133,6 @@ export const getColumnsByType = (pageType: string, refreshUserList: () => void):
             return <BadgeType type={row.original.role} />;
           },
           filterFn: "includesString",
-          // filterFn: (row, id, value) => {
-          //   const user = row.getValue(id) as { username: string };
-          //   return user.username.toLowerCase().includes(value.toLowerCase());
-          // },
         },
         {
           id: "action",
@@ -250,6 +245,100 @@ export const getColumnsByType = (pageType: string, refreshUserList: () => void):
         },
       ] as ColumnDef<Partner>[];
     // case "order":
+    case "order":
+      return [
+        {
+          accessorKey: "orderId",
+          header: () => <div className=" uppercase text-header-data-table">Order Id</div>,
+          cell: ({ row }) => {
+            return <div className="text-[#2F2B3D] text-sm text-left font-medium">{row.original.$id}</div>;
+          },
+        },
+        {
+          accessorKey: "date",
+          header: () => <div className=" uppercase text-header-data-table">Date</div>,
+          cell: ({ row }) => {
+            return <div className="flex gap-2  py-4">{row.original.date}</div>;
+          },
+        },
+        {
+          accessorKey: "customer",
+          id: "customer",
+          header: () => <div className=" p-4 uppercase text-header-data-table">Customer</div>,
+          cell: ({ row }) => {
+            const { customer } = row.original;
+            const textColor = customer.customerType || "First-Time";
+            return (
+              <div className="flex flex-col justify-center items-center gap-1">
+                <p className="font-medium text-[13px] text-[#2F2B3D] "> {customer.email}</p>
+                <p
+                  className={cn("font-medium text-[13px]", {
+                    "text-[#28C76F]": textColor.toLocaleLowerCase() === "loyalty",
+                    "text-[#F09000]": textColor.toLocaleLowerCase() === "repeated",
+                    "text-[#2c51c3]": textColor.toLocaleLowerCase() === "first-time",
+                  })}
+                >
+                  {`${textColor} Customer`}
+                </p>
+              </div>
+            );
+          },
+        },
+        {
+          accessorKey: "price",
+          id: "price",
+          header: () => <div className=" uppercase text-header-data-table">Price</div>,
+          cell: ({ row }) => {
+            return <p className=" font-medium text-sm text-[#2F2B3D]">AE{formatAmount(row.original.product.price)}</p>;
+          },
+        },
+        {
+          accessorKey: "type",
+          header: () => <div className=" uppercase text-header-data-table">Type</div>,
+          cell: ({ row }) => {
+            return <BadgeType type={row.original.type} />;
+          },
+        },
+        {
+          accessorKey: "product",
+          header: () => <div className=" uppercase text-header-data-table">Product</div>,
+          cell: ({ row }) => {
+            const { product } = row.original;
+            return <p>{product.name}</p>;
+          },
+        },
+        {
+          accessorKey: "status",
+          header: () => <div className=" uppercase text-header-data-table">Status</div>,
+          cell: ({ row }) => {
+            const statusColor = row.original.status;
+            return (
+              <div className="flex items-center gap-2">
+                <SvgIcon
+                  path="/assets/icons/status-point.svg"
+                  width={8}
+                  height={8}
+                  color={cn("", {
+                    "#2F2B3D": statusColor === "received",
+                    "#F09000": statusColor === "processing",
+                    "#005928": statusColor === "booking",
+                    "#CF0000": statusColor === "canceled",
+                  })}
+                />
+                <p className=" font-normal text-sm text-black capitalize">{row.original.status}</p>
+              </div>
+            );
+          },
+        },
+        {
+          id: "action",
+          enableHiding: false,
+          header: () => <div className=" uppercase text-header-data-table max-sm:hidden">Action</div>,
+          cell: ({ row }) => {
+            return <DropdownMenuAction order={row.original} orderId={row.original.$id} type="order" refreshUserList={refreshUserList} />;
+          },
+        },
+      ] as ColumnDef<Order>[];
     // case "customer":
   }
   return [];

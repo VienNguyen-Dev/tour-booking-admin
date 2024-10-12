@@ -1,10 +1,10 @@
 "use client";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import React from "react";
 
 const Home = () => {
-  const router = useRouter();
-  router.push("/sign-in");
+  // const router = useRouter();
+  redirect("/sign-in");
   return <div></div>;
 };
 
