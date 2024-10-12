@@ -18,6 +18,7 @@ const PasswordReset = () => {
   const [showPassword, setShowPassword] = useState(true);
   const [isResetting, setIsResetting] = useState(false);
 
+  const { userId, secret } = useParams();
   const router = useRouter();
   // 1. Define your form.
   const form = useForm<z.infer<typeof resetPasswordSchema>>({
@@ -28,9 +29,6 @@ const PasswordReset = () => {
     },
   });
   async function onSubmit(data: z.infer<typeof resetPasswordSchema>) {
-    // const userId = url.get("userId") as string;
-    // const secret = url.get("secret") as string;
-    const { userId, secret } = useParams()!;
     const { password, confirmPassword } = data;
     if (password !== confirmPassword) {
       toast({
