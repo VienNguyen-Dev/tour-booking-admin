@@ -176,8 +176,8 @@ export const getColumnsByType = (pageType: string, refreshUserList: () => void):
             const { tags } = row.original;
             return (
               <div className="flex flex-col justify-center items-center gap-1">
-                {tags.map((tag: string) => (
-                  <BadgeType type={tag} />
+                {tags.map((tag: string, index) => (
+                  <BadgeType key={index} type={tag} />
                 ))}
               </div>
             );
