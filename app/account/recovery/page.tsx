@@ -18,6 +18,7 @@ const PasswordRecovery = () => {
   const [isResetting, setIsResetting] = useState(false);
 
   const router = useRouter();
+  const { userId, secret } = useParams();
   // 1. Define your form.
   const form = useForm<z.infer<typeof passwordRecoverySchema>>({
     resolver: zodResolver(passwordRecoverySchema),
@@ -27,7 +28,6 @@ const PasswordRecovery = () => {
     },
   });
   async function onSubmit(data: z.infer<typeof passwordRecoverySchema>) {
-    const { userId, secret } = useParams();
     const { password, confirmPassword } = data;
     if (password !== confirmPassword) {
       toast({
