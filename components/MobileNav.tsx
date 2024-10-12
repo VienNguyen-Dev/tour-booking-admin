@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import SvgIcon from "./SvgIcon";
 
 const MobileNav = () => {
+  const pathname = usePathname();
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -20,12 +21,10 @@ const MobileNav = () => {
             <p className=" text-xl xl:text-3xl font-bold text-white ">Tour Dubai</p>
           </Link>
           <nav className="flex flex-col gap-6 ">
-            {LinkSideBar.map((item) => {
-              const pathname = usePathname();
-
+            {LinkSideBar.map((item, index) => {
               const isActive = pathname.includes(item.link) || pathname.startsWith(`/admin/${item.link}`);
               return (
-                <SheetClose asChild key={item.label}>
+                <SheetClose asChild key={index}>
                   <Link href={item.link} key={item.label} className={`flex items-center px-3  gap-2 min-h-[40px] rounded-md ${isActive ? "bg-white w-full text-[#014C46]" : "text-white"}`}>
                     <SvgIcon fit path={item.icon} width={32} height={32} color={`${isActive ? "#014C46" : "white"}`} />
                     <p className="text-sidebar-label">{item.label}</p>

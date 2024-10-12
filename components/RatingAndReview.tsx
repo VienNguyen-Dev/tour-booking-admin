@@ -95,10 +95,10 @@ const RatingAndReview = ({ user, onClose }: { user: User; onClose: () => void })
                   </div>
                   {/* each of rating */}
                   <div className="flex flex-col w-full gap-2">
-                    {ratingCounts.map((star) => {
+                    {ratingCounts.map((star, index) => {
                       const percentOfStar = Math.round((star.value / availableRating) * 100);
                       return (
-                        <div className="flex gap-2 w-full items-center justify-between text-[#2F2B3D] font-medium text-xs">
+                        <div key={index} className="flex gap-2 w-full items-center justify-between text-[#2F2B3D] font-medium text-xs">
                           <p className="w-[40px]">{`${star.star} ${star.star > 1 ? "Stars" : "Star"}`}</p>
                           <div className="flex-1 h-[12px]">
                             <StarProgress value={percentOfStar} />

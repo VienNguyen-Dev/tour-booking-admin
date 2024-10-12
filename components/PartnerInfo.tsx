@@ -286,7 +286,7 @@ const PartnerInfo = () => {
               </Button>
             </div>
             {fields.length > 0 &&
-              fields.map((field: string) => {
+              fields.map((field: string, index) => {
                 const fieldName = field === "e-Voucher" ? "eVoucher" : field;
                 const placeholder =
                   field === "e-Voucher"
@@ -301,7 +301,7 @@ const PartnerInfo = () => {
                     ? "Dubai Hotel"
                     : "";
                 return (
-                  <div className="flex gap-6 ">
+                  <div className="flex gap-6 " key={index}>
                     <CustomFormField name={fieldName} label={convertToUpperCase(field)} control={form.control} placeholder={placeholder} />
                     <Button onClick={() => handleRemoveField(field)} type="button" className=" border mt-8 hover:bg-red-300">
                       <Image src={"/assets/icons/delete.png"} alt="delete" width={24} height={24} className="w-6 h-6" />

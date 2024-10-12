@@ -19,8 +19,8 @@ const OrderCard = ({ orders, status }: { orders: Order[]; status?: string }) => 
       >
         {status}
       </div>
-      {orders.map((order: Order) => (
-        <div className="flex flex-col gap-4 mt-2">
+      {orders.map((order: Order, index) => (
+        <div key={index} className="flex flex-col gap-4 mt-2">
           <div className="relative w-full h-fit rounded-md shadow-[#2F2B3D24] shadow-md bg-white p-3">
             <div className="flex flex-col border-b-[1.5px] border-[#38414A] mt-[14px] py-2  gap-2">
               <div className="flex gap-2">

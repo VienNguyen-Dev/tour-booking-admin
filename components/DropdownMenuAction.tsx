@@ -141,10 +141,11 @@ const DropdownMenuAction = ({
           }}
         >
           {type === "action" && <DropdownMenuLabel className="text-[#014C46] border-b border-[#014C461A] ">Action</DropdownMenuLabel>}
-          {menuItem.map((item) => {
+          {menuItem.map((item, index) => {
             const iconAction = item.label === "Block" ? `/assets/icons/${updateTitle === "Block" ? "lock.svg" : "unlock.svg"}` : item.icon;
             return (
               <div
+                key={index}
                 className={` flex mr-1 w-full justify-center items-center ${
                   isBlocked && (item.label === "Edit" || item.label === "Add") ? "cursor-not-allowed bg-slate-300 opacity-50" : "hover:bg-[#57d7cd]"
                 } `}

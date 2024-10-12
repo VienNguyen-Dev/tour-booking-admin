@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import BadgeType from "./TypeBadge";
 import AddUser from "./AddUser";
 
-const UserCard = ({ users, status, refreshUserList }: { users: User[]; status: string, refreshUserList: () => void }) => {
+const UserCard = ({ users, status, refreshUserList }: { users: User[]; status: string; refreshUserList: () => void }) => {
   const [isAddUser, setIsAddUser] = useState(false);
 
   return (
@@ -18,8 +18,8 @@ const UserCard = ({ users, status, refreshUserList }: { users: User[]; status: s
       >
         {status}
       </div>
-      {users.map((user: User) => (
-        <div className="flex flex-col gap-6 mt-2">
+      {users.map((user: User, index) => (
+        <div className="flex flex-col gap-6 mt-2" key={index}>
           <div className="relative w-full h-fit rounded-md shadow-[#2F2B3D24] shadow-md bg-white p-4">
             <div className="flex flex-col mt-[14px] py-2  gap-2">
               <div className="flex gap-2">
