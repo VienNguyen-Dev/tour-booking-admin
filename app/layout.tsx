@@ -4,6 +4,11 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toaster";
 import "@/public/fonts/font-face.css";
+import { UserProvider } from "./context/UserContext";
+import { CartProvider } from "./context/CartContext";
+import HeaderBoard from "@/components/HeaderBoard";
+import { getLoggedInUser } from "@/lib/actions/user.actions";
+import { redirect } from "next/navigation";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const kaushan_script = Kaushan_Script({
@@ -17,7 +22,7 @@ export const metadata: Metadata = {
   description: "Travel everywhere with Tour Booking App",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -25,7 +30,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={cn(`max-h-screen ${kaushan_script.variable} font-sans`, inter.className)}>
-        {children}
+        <CartProvider>{children}</CartProvider>
         <Toaster />
       </body>
     </html>

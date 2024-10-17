@@ -344,7 +344,100 @@ export const getColumnsByType = (pageType: string, refreshUserList: () => void):
           },
         },
       ] as ColumnDef<Order>[];
-    // case "customer":
+    case "customer":
+      return [
+        {
+          accessorKey: "customerId",
+          header: () => <div className=" uppercase text-header-data-table">Customer Id</div>,
+          cell: ({ row }) => {
+            return <div className="text-[#2F2B3D] text-sm text-left font-medium">{row.original.$id}</div>;
+          },
+        },
+        // {
+        //   accessorKey: "date",
+        //   header: () => <div className=" uppercase text-header-data-table">Date</div>,
+        //   cell: ({ row }) => {
+        //     return <div className="flex gap-2  py-4">{formatDateTime(new Date(row.original.date)).dateTime}</div>;
+        //   },
+        // },
+        {
+          accessorKey: "customer",
+          id: "customer",
+          header: () => <div className=" p-4 uppercase text-header-data-table">Customer</div>,
+          cell: ({ row }) => {
+            const textColor = row.original.customerType || "First-Time";
+            return (
+              <div className="flex flex-col justify-center items-center gap-1">
+                <p className="font-medium text-[13px] text-[#2F2B3D] "> {row.original.name}</p>
+                <p className="font-medium text-[13px] text-[#2F2B3D] "> {row.original.email}</p>
+                <p
+                  className={cn("font-medium text-[13px]", {
+                    "text-[#28C76F]": textColor.toLocaleLowerCase() === "loyalty",
+                    "text-[#F09000]": textColor.toLocaleLowerCase() === "repeated",
+                    "text-[#2c51c3]": textColor.toLocaleLowerCase() === "first-time",
+                  })}
+                >
+                  {`${textColor} Customer`}
+                </p>
+              </div>
+            );
+          },
+        },
+        {
+          accessorKey: "price",
+          id: "price",
+          header: () => <div className=" uppercase text-header-data-table">Price</div>,
+          cell: ({ row }) => {
+            return <p className=" font-medium text-sm text-[#2F2B3D]">AE{formatAmount(row.original.orderTotal)}</p>;
+          },
+        },
+
+        {
+          accessorKey: "product",
+          id: "product",
+          header: () => <div className=" uppercase text-header-data-table">Product</div>,
+          cell: ({ row }) => {
+            const { product } = row.original;
+            return <p>{product.name}</p>;
+          },
+          filterFn: (row, id, value) => {
+            const product = row.getValue(id) as { name: string; type: string };
+            return product.name.toLowerCase().includes(value.toLowerCase());
+          },
+        },
+        {
+          accessorKey: "status",
+          header: () => <div className=" uppercase text-header-data-table">Status</div>,
+          cell: ({ row }) => {
+            const statusColor = row.original.status;
+            return (
+              <div className="flex items-center gap-2">
+                <SvgIcon
+                  path="/assets/icons/status-point.svg"
+                  width={8}
+                  height={8}
+                  color={cn("", {
+                    "#2F2B3D": statusColor === "received",
+                    "#F09000": statusColor === "processing",
+                    "#005928": statusColor === "booking",
+                    "#CF0000": statusColor === "canceled",
+                  })}
+                />
+                <p className=" font-normal text-sm text-black capitalize">{row.original.status}</p>
+              </div>
+            );
+          },
+        },
+        {
+          id: "action",
+          enableHiding: false,
+          header: () => <div className=" uppercase text-header-data-table max-sm:hidden">Action</div>,
+          cell: ({ row }) => {
+            return <DropdownMenuAction customer={row.original} customerId={row.original.$id} type="order" refreshUserList={refreshUserList} />;
+          },
+        },
+      ] as ColumnDef<Customer>[];
   }
+
   return [];
 };

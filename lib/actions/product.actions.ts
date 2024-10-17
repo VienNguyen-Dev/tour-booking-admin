@@ -18,7 +18,7 @@ export const getAllProducts = async () => {
 export const getProductById = async (productId: string) => {
   try {
     const { database } = await createAdminClient();
-    const product = await database.listDocuments(DATABASE_ID!, PRODUCT_COLLECTIONS_ID!, [Query.equal("$id", [productId])]);
+    const product = await database.listDocuments(DATABASE_ID!, PRODUCT_COLLECTIONS_ID!, [Query.equal("$id", productId)]);
     return parseStringfy(product.documents[0]);
   } catch (error) {
     console.log("Error while get product by Id", error);

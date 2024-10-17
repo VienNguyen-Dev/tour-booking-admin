@@ -25,7 +25,7 @@ const OrderCard = ({ orders, status }: { orders: Order[]; status?: string }) => 
             <div className="flex flex-col border-b-[1.5px] border-[#38414A] mt-[14px] py-2  gap-2">
               <div className="flex gap-2">
                 <Image src={"/assets/icons/car.png"} width={20} height={20} alt="car" />
-                <h1 className="text-xl font-bold">{order?.product.name}</h1>
+                <h1 className="text-xl font-bold">{order?.product?.name}</h1>
               </div>
               {/* <p>{order.product.name}</p> */}
               <div className="flex justify-between">

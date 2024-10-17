@@ -29,8 +29,10 @@ const AuthForm = ({ type }: AuthFormProps) => {
   useEffect(() => {
     const res = async () => {
       const response = await autoLogin();
-      if (response) {
+      if ((response && response.role === "admin") || response.role === "supperAdmin") {
         router.push("/admin/redeems-exchanges");
+      } else if (response && response.role === "user") {
+        router.push("/booking");
       }
     };
     res();
@@ -57,17 +59,19 @@ const AuthForm = ({ type }: AuthFormProps) => {
     try {
       if (type === "sign-up") {
         const response = await createUser(createUserData);
-        if (response) {
+        if (response && (response.role === "admin" || response.role === "supperAdmin")) {
           router.push("/admin/redeems-exchanges");
           toast({
             title: "Success",
             description: "User created successfully",
             variant: "default",
           });
+        } else if (response && response.role === "user") {
+          router.push("/booking");
         }
       } else if (type === "sign-in") {
         const response = await login({ email: data.email, password: data.password, remember: data.remember });
-        if (response) {
+        if (response && (response.role === "admin" || response.role === "supperAdmin")) {
           router.push("/admin/redeems-exchanges");
           setcheckedRemember(response.remember);
 
@@ -76,6 +80,8 @@ const AuthForm = ({ type }: AuthFormProps) => {
             description: "Login account successfully",
             variant: "default",
           });
+        } else if (response && response.role === "user") {
+          router.push("/booking");
         } else {
           toast({
             title: "Error",

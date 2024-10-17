@@ -6,19 +6,19 @@ import UserCard from "./UserCard";
 import PartnerCard from "./PartnerCard";
 interface DataBoardProps {
   value: string;
-  data: (Order | User | Product | Partner)[];
+  data: (Order | User | Product | Partner | Customer)[];
   pageType: string;
   refreshUserList: () => void;
 }
 
 const DataBoard = ({ value, data, pageType, refreshUserList }: DataBoardProps) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const filterData = (item: Order | User | Product | Partner) => {
+  const filterData = (item: Order | User | Product | Partner | Customer) => {
     const searchLower = searchTerm.toLowerCase();
     switch (pageType) {
-      case "redeem":
-        const redeemOrder = item as Order;
-        return redeemOrder.product.name.toLowerCase().includes(searchLower) || redeemOrder.product.type.toLowerCase().includes(searchLower);
+      // case "redeem":
+      //   const redeemOrder = item as Order;
+      //   return redeemOrder.product.name.toLowerCase().includes(searchLower) || redeemOrder.product.type.toLowerCase().includes(searchLower);
       case "user":
         const user = item as User;
         return user.username.toLowerCase().includes(searchLower) || user.email.toLowerCase().includes(searchLower);
@@ -28,9 +28,12 @@ const DataBoard = ({ value, data, pageType, refreshUserList }: DataBoardProps) =
       case "partner":
         const partner = item as Partner;
         return partner.name.toLowerCase().includes(searchLower) || partner.email.toLowerCase().includes(searchLower);
-      case "order":
+      case "order" || "redeem":
         const order = item as Order;
         return order.status.toLowerCase().includes(searchLower) || order.type.toLowerCase().includes(searchLower);
+      case "customer":
+        const customer = item as Customer;
+        return customer.name?.toLowerCase().includes(searchLower) || customer.customerType?.toLowerCase().includes(searchLower);
       default:
         return [];
     }

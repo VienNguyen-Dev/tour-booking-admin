@@ -1,13 +1,12 @@
-import React, { useContext } from "react";
-import MobileNav from "./MobileNav";
+import { useCart } from "@/app/context/CartContext";
 import { formatDateTime } from "@/lib/utils";
+import React from "react";
 import Notification from "./Notification";
 import DropdownMenuAction from "./DropdownMenuAction";
-import SvgIcon from "./SvgIcon";
 import Link from "next/link";
-import { useCart } from "@/app/context/CartContext";
+import SvgIcon from "./SvgIcon";
 
-const HeaderBoard = ({ user }: { user: User }) => {
+const HeaderPage = ({ user, cartCount }: { user: User; cartCount: number }) => {
   const notifications = [
     {
       name: "Vien",
@@ -42,9 +41,6 @@ const HeaderBoard = ({ user }: { user: User }) => {
   ];
   return (
     <div className="rounded-bl-[12px] ml-3 flex justify-between items-center w-full min-w-[350px] min-h-[70px] py-4 px-6 bg-[#014C46]">
-      <div className="lg:hidden max-lg:block flex-1">
-        <MobileNav />
-      </div>
       <div className="flex gap-6 justify-end items-center flex-1 mx-3">
         <Notification notifications={notifications} />
 
@@ -55,6 +51,7 @@ const HeaderBoard = ({ user }: { user: User }) => {
           <Link href={`/cart/${user.$id}`} target="_blank" className="w-8 h-8 cursor-pointer">
             <div className="relative">
               <SvgIcon path="/assets/icons/Orders.svg" width={32} height={32} color="white" fit />
+              <p className=" absolute text-red-500 -top-2 right-0.5 font-bold text-xl">{cartCount}</p>
             </div>
           </Link>
         )}
@@ -63,4 +60,4 @@ const HeaderBoard = ({ user }: { user: User }) => {
   );
 };
 
-export default HeaderBoard;
+export default HeaderPage;

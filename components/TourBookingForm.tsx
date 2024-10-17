@@ -1,5 +1,5 @@
 import { CartContext } from "@/app/context/CartContext";
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,8 +8,9 @@ import CustomFormField from "./CustomFormField";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
-import { OrderItemCard } from "./OrderItemCard";
 import PriceSlider from "./PriceSlider";
+import { BookingCard, Tour } from "./BookingCard";
+import { getAllTours } from "@/lib/actions/tour.actions";
 
 const newOrderSchema = z.object({
   productName: z.string(),
@@ -18,8 +19,7 @@ const newOrderSchema = z.object({
   price: z.coerce.number().min(1).max(10000),
   dateRange: z.string(),
 });
-const TourBookingForm = ({ products }: { products: Product[] }) => {
-  const { addToCart } = useContext(CartContext);
+const TourBookingForm = () => {
   const [isSending, setIsSending] = useState(false);
   const form = useForm<z.infer<typeof newOrderSchema>>({
     resolver: zodResolver(newOrderSchema),
@@ -48,9 +48,62 @@ const TourBookingForm = ({ products }: { products: Product[] }) => {
     console.log("Selected date range:", dateRange);
   };
 
+  const [tours, setTours] = useState([]);
+  useEffect(() => {
+    const fetchTour = async () => {
+      const res = await getAllTours();
+      setTours(res);
+    };
+    fetchTour();
+  }, []);
+  // const tours = [
+  //   {
+  //     $id: "tour1-id",
+  //     name: "Dinner in the Sky",
+  //     description:
+  //       "Dinner in the Sky is one of the most unique dining experiences in Dubai. A table is suspended by a crane 50 meters high in the sky while you indulge in the luxurious dining experience. Dinner in the sky is one of the most unusual restaurant in the world. Celebrate special occasion and make your day a memorable one with this ultimate dining experience in Dubai.",
+  //     price: 135,
+  //     image: "/assets/image/board-tour.jpg",
+  //   },
+  //   {
+  //     $id: "tour2-id",
+  //     name: "Super Yacht Experience",
+  //     description: "Enjoy cruising on a tri deck luxury super yacht. Suitable for families, couples and friends alike.",
+  //     price: 360,
+  //     image: "/assets/image/city-tour.jpg",
+  //   },
+
+  //   {
+  //     $id: "tour3-id",
+
+  //     name: "Evening Desert Safari with BBQ Dinner and Entertainment",
+  //     description:
+  //       "The tour begins with 4x4 vehicle picking you up from your hotel or home and driving down you to the outskirts of desert. An experienced safari drivers will drive you through the exciting desert sand dunes to experience the roller coaster thrilling dune bashing. Experience your adrenaline going high up while the sands sweeps around your vehicle. Dont miss the chance to capture some breathtaking pictures of the desert during sunset. Once you arrive at the campsite you can enjoy a , traditional arabic coffee as a welcome drink,  ladies can get a henna tattoo. Apart from the this, enjoy the highlights of the tour the tanoura dance, belly dance, other live performances and delicious buffet dinner.",
+  //     price: 90,
+  //     image: "/assets/image/night-city-tour.jpg",
+  //   },
+  //   {
+  //     $id: "tour4-id",
+
+  //     name: "Iconic Tour - 12 min",
+  //     description:
+  //       "Depart from the Helidubai Jumeirah Heliport and experience a mesmerizing sites of the Palm Jumeirah and Burj Al Arab’s iconic structure. As your aerial tour continues, fly above the astonishing Dubai beaches. Be adorned with the views of the amazing architectural masterpiece of Burj Khalifa – the tallest building in the world, the Dubai Canal, and other artistically built skyscrapers at the Business Bay. Return towards Helidubai Helipad with unforgettable memories of Dubai.",
+  //     price: 90,
+  //     image: "/assets/image/heliport.jpg",
+  //   },
+  //   {
+  //     $id: "tour5-id",
+
+  //     name: "AYA Universe and View at The Palm Combo",
+  //     description:
+  //       "Visit 2 best toursit attractions in Dubai AYA Universe and View at the Palm. AYA Park is a space where you can dance with avatars, encounter new creatures, and interact with elements that exist nowhere else. It's a truly unique and immersive experience that will leave you in awe. The View observatory deck on level 52 of Palm Tower offers panoramic, 360-degree views of Palm Jumeirah, the Arabian Gulf and iconic landmarks of Dubai from an outdoor terrace.",
+  //     price: 90,
+  //     image: "/assets/image/car-tour.jpg",
+  //   },
+  // ] as Tour[];
   return (
     <div className="flex flex-col gap-4 p-5 justify-center items-center">
-      <OrderItemCard products={products} />
+      <BookingCard tours={tours} />
       <Card className="w-full max-w-[600px] flex items-center flex-col justify-center mt-10">
         <CardHeader className="flex flex-col items-center">
           <CardTitle>Create a new Journey</CardTitle>

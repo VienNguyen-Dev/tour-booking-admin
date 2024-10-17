@@ -58,6 +58,7 @@ declare type ShippingInfo = {
 };
 
 declare type Customer = {
+  $id: string;
   name: string;
   email: string;
   orderTotal: number;
@@ -168,7 +169,7 @@ declare type Product = {
   price: number;
   url?: string;
   eVoucher?: string;
-  variant?: Variant[];
+  variant?: Variant;
 };
 
 declare type Variant = {
@@ -189,10 +190,13 @@ declare type Order = {
 
 declare type CreateNewOrderParams = {
   date: string;
-  price: number;
+  totalOrder: number;
   type: string;
   status: string;
-  payment: string;
+  bookingStatus: string;
+  product: string;
+  customer: string;
+  partner: string;
 };
 declare interface SvgIconProps {
   width: number;

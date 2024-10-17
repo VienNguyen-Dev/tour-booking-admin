@@ -3,7 +3,6 @@ const { PARTNER_COLLECTIONS_ID, DATABASE_ID, ORDER_COLLECTIONS_ID } = process.en
 import { ID, Query } from "node-appwrite";
 import { createAdminClient } from "../appwrite.config";
 import { parseStringfy } from "../utils";
-import { getProductById } from "./product.actions";
 
 export async function getData() {
   const data = [
@@ -264,7 +263,6 @@ export const createNewOrder = async (orderData: CreateNewOrderParams) => {
   try {
     const { database } = await createAdminClient();
     const newOrder = await database.createDocument(DATABASE_ID!, ORDER_COLLECTIONS_ID!, ID.unique(), orderData);
-    if (!newOrder) throw Error;
     return parseStringfy(newOrder);
   } catch (error) {
     console.log("Error while create a new order", error);

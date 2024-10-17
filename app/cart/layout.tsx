@@ -6,13 +6,11 @@ import { getLoggedInUser } from "@/lib/actions/user.actions";
 import { CartProvider } from "../context/CartContext";
 import HeaderPage from "@/components/HeaderPage";
 
-export default async function BookingLayout({
+export default async function CartLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const loggedInUser = await getLoggedInUser();
-
   return (
     <section className={cn(`max-h-screen  font-sans`)}>
       <CartProvider>

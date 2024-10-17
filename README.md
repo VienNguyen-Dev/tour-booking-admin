@@ -41,3 +41,9 @@ link figma: https://www.figma.com/design/t1iD7LhPy32QmdEDchdTOA/Admin-Ithara-des
 * CẦN PHẢI CẢI THIỆN SELECT TRONG TAOJ PRODUCT MỚI
 * Cac bang co the loc nhieu column khac nhau
 * Phan tao giao dien cua user de co the dat tour chua hoan thien
+
+* Trong tao dơn hang:
+
+- Khong cap nhat trang thai khi doan hang them hoac xoa.
+- thanh toán thanh cong nhưng gio hang khong reset
+- Khong cap nhat trang thai gio hang

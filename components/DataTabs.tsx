@@ -8,7 +8,7 @@ import DataBoard from "./DataBoard";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getColumnsByType } from "@/app/orders/columns";
 interface DataTabsProps {
-  data: (Order | User | Product | Partner)[];
+  data: (Order | User | Product | Partner | Customer)[];
   pageType: string;
   refreshUserList?: () => void;
 }
@@ -41,6 +41,8 @@ const TabsData = ({ data, pageType, refreshUserList }: DataTabsProps) => {
           return data as Partner[];
         case "order":
           return data as Order[];
+        case "customer":
+          return data as Customer[];
         default:
           return [];
       }
