@@ -87,19 +87,19 @@ const OrderDetailForm = ({ order, pageType }: OrderDetailFormProps) => {
                       <h2 className="font-bold text-[16px] text-[#0D062D] ">{order.customer?.name}</h2>
                       <div className="flex gap-2">
                         <p className="text-[#014C46] text-[12px] font-bold">City:</p>
-                        <span className="font-normal text-[12px] text-[#0D062D]">{order.customer?.shippingInfo?.city}</span>
+                        <span className="font-normal text-[12px] text-[#0D062D]">{order.customer?.city}</span>
                       </div>
                       <div className="flex gap-2">
                         <p className="text-[#014C46] text-[12px] font-bold">Country:</p>
-                        <span className="font-normal text-[12px] text-[#0D062D]">{order.customer?.shippingInfo?.country}</span>
+                        <span className="font-normal text-[12px] text-[#0D062D]">{order.customer?.country}</span>
                       </div>
                       <div className="flex gap-2">
                         <p className="text-[#014C46] text-[12px] font-bold capitalize">Package Type:</p>
-                        <span className="font-normal text-[12px] text-[#0D062D]">{order.customer?.shippingInfo?.packageType}</span>
+                        <span className="font-normal text-[12px] text-[#0D062D]">{order.partner?.packageType}</span>
                       </div>
                       <div className="flex gap-2">
                         <p className="text-[#014C46] text-[12px] font-bold capitalize">Shipping option:</p>
-                        <span className="font-normal text-[12px] text-[#0D062D]">{order.customer?.shippingInfo?.shippingOption}</span>
+                        <span className="font-normal text-[12px] text-[#0D062D]">{order.customer?.shippingOption}</span>
                       </div>
                       <div className="flex gap-2">
                         <p className="text-[#014C46] text-[12px] font-bold capitalize">Expiry date:</p>
@@ -113,7 +113,7 @@ const OrderDetailForm = ({ order, pageType }: OrderDetailFormProps) => {
             <div className=" h-[28px] bg-[#0D062D] rounded-bl-[12px] rounded-br-[6px] w-full">
               <div className="flex justify-center items-center gap-1 border-none space-y-1">
                 <Image src={"/assets/icons/Location.png"} width={16} height={16} alt="location" className="mt-1" />
-                <p className="text-sm font-normal text-white">{order.customer?.shippingInfo?.address}</p>
+                <p className="text-sm font-normal text-white">{order.customer?.address}</p>
               </div>
             </div>
             <div className=" absolute left-0 bottom-0 z-10">

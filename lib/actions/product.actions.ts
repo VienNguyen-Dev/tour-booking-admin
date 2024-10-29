@@ -73,3 +73,13 @@ export const updateProduct = async (updateProductData: EditProductDataParams) =>
     console.log("Error while updating product", error);
   }
 };
+
+export const getProductByPartnetId = async (partnerId: string) => {
+  try {
+    const { database } = await createAdminClient();
+    const product = await database.listDocuments(DATABASE_ID!, PRODUCT_COLLECTIONS_ID!, [Query.equal("partnerId", partnerId)]);
+    return parseStringfy(product.documents);
+  } catch (error) {
+    console.log("Error while get product by partner Id", error);
+  }
+};

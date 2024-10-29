@@ -94,7 +94,7 @@ export const editProductSchema = z.object({
   avatar: z.any().optional(),
   partnerProduct: z.string().min(10),
   description: z.string().optional(),
-  bookingType: z.string()
+  bookingType: z.string(),
 });
 
 export const editPartnerSchema = z.object({
@@ -119,4 +119,11 @@ export const orderInfoSchema = z.object({
   price: z.coerce.number().min(1),
   type: z.string({ required_error: "Please select a status" }),
   status: z.string({ required_error: "Please select a status" }),
+});
+
+export const redeemSchema = z.object({
+  email: z.string().email("Please enter am email valid"),
+  contact: z.string().min(10).max(15),
+  orderStatus: z.string().optional(),
+  bookingStatus: z.string().optional(),
 });

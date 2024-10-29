@@ -61,8 +61,25 @@ const CustomFormField = <T extends z.ZodTypeAny>({ control, name, label, placeho
       ? ["AE$", "USA$"]
       : name === "bookingField"
       ? ["bookingType"]
+      : name === "bookingStatus"
+      ? ["Confirmed", "Booked", "Completed"]
       : [];
-  const nameValues = ["role", "status", "type", "partnerProduct", "fieldName", "fieldType", "variantPrice", "fieldVariant", "tags", "bookingType", "payment", "shippingOption", "bookingField"];
+  const nameValues = [
+    "role",
+    "status",
+    "type",
+    "partnerProduct",
+    "fieldName",
+    "fieldType",
+    "variantPrice",
+    "fieldVariant",
+    "tags",
+    "bookingType",
+    "payment",
+    "shippingOption",
+    "bookingField",
+    "bookingStatus",
+  ];
   const types = ["name", "categories", "eVoucher", "url", "price"];
   const [selectedRange, setSelectedRange] = useState<[Date | null, Date | null]>(dateRange || [null, null]);
 

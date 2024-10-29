@@ -71,6 +71,7 @@ declare type Customer = {
   orderId: Order[];
   avatar: string;
   totalSpent: number;
+  shippingOption: string;
 };
 declare interface CreateNewCustomerParams {
   name: string;
@@ -219,6 +220,7 @@ declare type Order = {
   product: Product;
   status: "received" | "processing" | "booking" | "canceled" | "Voucher Sent" | "refunded";
   type: "E-Voucher" | "Physical";
+  bookingStatus?: string;
 };
 
 declare type CreateNewOrderParams = {
