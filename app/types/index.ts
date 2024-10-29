@@ -131,7 +131,6 @@ declare type NewPartnerParams = {
   country?: string;
   packageType?: string;
   shippingOption?: string;
-  bookingType?: string;
   notes?: string;
   fee?: number;
 };

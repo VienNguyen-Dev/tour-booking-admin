@@ -42,7 +42,6 @@ const EditPartnerForm = ({ partner, product }: { partner: Partner; product: Prod
       country: partner && partner.country,
       packageType: partner && partner.packageType,
       shippingOption: partner && partner.shippingOption,
-      bookingType: partner && partner.bookingType,
       payment: partner ? partner.payment : "",
       notes: partner && partner.notes,
       fee: (partner && partner.fee) || 0,
@@ -72,9 +71,6 @@ const EditPartnerForm = ({ partner, product }: { partner: Partner; product: Prod
         formData.append("tags[]", tag); // Thêm từng tag vào FormData
       });
     }
-    if (data.bookingType) {
-      formData.append("bookingType", data.bookingType || partner.bookingType || "");
-    }
     if (data.payment) {
       formData.append("payment", data.payment || partner.payment || "");
     }
@@ -101,9 +97,6 @@ const EditPartnerForm = ({ partner, product }: { partner: Partner; product: Prod
     }
     if (data.pocEmail) {
       formData.append("pocEmail", data.pocEmail || partner.pocEmail || "");
-    }
-    if (data.bookingType) {
-      formData.append("bookingType", data.bookingType || partner.bookingType || "");
     }
     if (data.website) {
       formData.append("website", data.website || partner.website || "");
@@ -192,12 +185,11 @@ const EditPartnerForm = ({ partner, product }: { partner: Partner; product: Prod
       POCPhone: partner.pocPhone,
       Redeem_steps: partner.redeemInfo,
       note: partner.notes,
-      bookingType: partner.bookingType,
       payment: partner.payment,
       fee: partner.fee,
       Product_name: product?.name,
       Product_type: product?.type,
-      Partner: product?.partner,
+      Partner: product?.partnerId.partnerProduct,
       Price: product?.price,
       Product_status: product?.status,
       Product_categories: product?.categories,
