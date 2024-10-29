@@ -29,7 +29,7 @@ const AuthForm = ({ type }: AuthFormProps) => {
   useEffect(() => {
     const res = async () => {
       const response = await autoLogin();
-      if ((response && response.role === "admin") || response.role === "supperAdmin") {
+      if (response && (response.role === "admin" || response.role === "supperAdmin")) {
         router.push("/admin/redeems-exchanges");
       } else if (response && response.role === "user") {
         router.push("/booking");
@@ -68,6 +68,11 @@ const AuthForm = ({ type }: AuthFormProps) => {
           });
         } else if (response && response.role === "user") {
           router.push("/booking");
+          toast({
+            title: "Success",
+            description: "User created successfully",
+            variant: "default",
+          });
         }
       } else if (type === "sign-in") {
         const response = await login({ email: data.email, password: data.password, remember: data.remember });

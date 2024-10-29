@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -9,31 +9,75 @@ import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { autoLogin, createUser, login, signUpWithGoogle } from "@/lib/actions/user.actions";
+import { autoLogin, createUser, login, signUpWithGoogle, uploadAvatar } from "@/lib/actions/user.actions";
 import { useToast } from "@/components/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import CustomFormField from "@/components/CustomFormField";
 
 const TestPage = () => {
+  const [previewImage, setPreviewImage] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
   const router = useRouter();
   const formSchema = z.object({
-    partner: z.string(),
+    avatar: z.string(),
   });
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      partner: "",
+      avatar: "",
     },
   });
   // 2. Define a submit handler.
   async function onSubmit(data: z.infer<typeof formSchema>) {
-    // console.log(data);
+    // const avatarUrl = await uploadAvatar(data.avatar);
+    // if (avatarUrl) console.log("success");
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-1 lg:space-y-2 2xl:space-y-6">
-        <CustomFormField name="partner" label="Partners" control={form.control} placeholder="Select a partner type" />
+        <FormField
+          control={form.control}
+          name="avatar"
+          render={({ field: { value, onChange, ref, ...fieldProps } }) => (
+            <FormItem>
+              <FormControl>
+                <div className="flex justify-center items-center ">
+                  <div onClick={handleAvatarClick} className=" xl:w-[100px] xl:h-[100px] 2xl:w-[80px] 2xl:h-[80px] relative overflow-hidden rounded-full cursor-pointer">
+                    <img src={previewImage} alt="avatar" width={80} height={80} className=" cursor-pointer rounded-full object-cover w-20 h-20" />
+
+                    <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                      <p className="text-white text-xs text-center">Click to change</p>
+                    </div>
+                  </div>
+                  <Input
+                    ref={fileInputRef}
+                    className="hidden"
+                    accept="image/*"
+                    onChange={(event) => {
+                      const file = event.target.files && event.target.files[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                          setPreviewImage(reader.result as string);
+                        };
+                        reader.readAsDataURL(file);
+                        onChange(file);
+                      }
+                    }}
+                    type="file"
+                    {...fieldProps}
+                  />
+                </div>
+              </FormControl>
+              <FormMessage className="text-error-message" />
+            </FormItem>
+          )}
+        />
+        {/* <CustomFormField name="partner" label="Partners" control={form.control} placeholder="Select a partner type" /> */}
         <Button type="submit" variant={"outline"} className="secondary-btn">
           <Image src={"/assets/icons/google.png"} width={28} height={28} alt="google-icon" />
           Click

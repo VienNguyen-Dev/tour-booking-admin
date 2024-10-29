@@ -4,6 +4,7 @@ const { PARTNER_COLLECTIONS_ID, DATABASE_ID, PRODUCT_COLLECTIONS_ID } = process.
 import { ID, Query } from "node-appwrite";
 import { createAdminClient } from "../appwrite.config";
 import { parseStringfy } from "../utils";
+import { uploadAvatar } from "./user.actions";
 
 export const getProduct = async (partnerId: string) => {
   try {
@@ -35,23 +36,49 @@ export const createNewPartner = async (partnerData: NewPartnerParams) => {
   }
 };
 
-export const createNewProduct = async (product: NewProductParams) => {
-  const { partnerId, productData } = product;
+export const createNewProduct = async (productData: FormData) => {
   try {
+    const avatar = productData.get("avatar") as File | null;
+    let avatarUrl: string | undefined;
+
+    if (avatar) {
+      avatarUrl = await uploadAvatar(avatar);
+    }
+    console.log("avatar", avatarUrl);
     const { database } = await createAdminClient();
+
+    // Lấy các dữ liệu khác từ FormData
+    const name = productData.get("name")?.toString();
+    const price = parseFloat(productData.get("price")?.toString() || "0");
+    const categories = JSON.parse(productData.get("categories")?.toString() || "[]");
+    const url = productData.get("url")?.toString();
+    const eVoucher = productData.get("eVoucher")?.toString();
+    const status = productData.get("status")?.toString();
+    const type = productData.get("type")?.toString();
+    const partnerId = productData.get("partnerId")?.toString();
+
     const product = await database.createDocument(DATABASE_ID!, PRODUCT_COLLECTIONS_ID!, ID.unique(), {
-      ...productData,
+      name,
+      price,
+      categories,
+      url,
+      eVoucher,
+      status,
+      type,
       partnerId,
+      avatar: avatarUrl,
     });
+
     if (product) {
       return parseStringfy(product);
     } else {
-      throw Error;
+      throw new Error("Failed to create product");
     }
   } catch (error) {
-    console.log("Error while create a new product", error);
+    console.log("Error while creating a new product", error);
   }
 };
+
 export const getAllPartners = async () => {
   try {
     const { database } = await createAdminClient();
@@ -106,11 +133,6 @@ export const updatePartner = async (updateData: UpdatePartnerParams) => {
   if (!tags) {
     tagsValue = partner?.tags!;
   }
-  const bookingType = formData.get("bookingType") as string;
-  let bookingTypeValue = bookingType;
-  if (!bookingType) {
-    bookingTypeValue = partner?.bookingType!;
-  }
   const payment = formData.get("payment") as string;
   let paymentValue = payment;
   if (!payment) {
@@ -156,7 +178,6 @@ export const updatePartner = async (updateData: UpdatePartnerParams) => {
       country: countryValue,
       packageType: packageTypeValue,
       shippingOption: shippingOptionValue,
-      bookingType: bookingTypeValue,
       tags: tagsValue,
       payment: paymentValue,
       redeemInfo: redeemInfoValue,

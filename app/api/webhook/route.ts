@@ -1,13 +1,11 @@
 import { updateOrderStatus } from "@/lib/actions/order.actions";
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
-import { useCart } from "@/app/context/CartContext";
 
 export async function POST(request: NextRequest) {
   const payload = await request.text();
   const sig = request.headers.get("stripe-signature") as string;
   let event;
-  const { resetCart } = useCart();
   try {
     event = stripe.webhooks.constructEvent(payload, sig, process.env.STRIPE_WEBHOOK_SECRET!);
   } catch (err: any) {
@@ -18,10 +16,8 @@ export async function POST(request: NextRequest) {
   switch (event.type) {
     case "payment_intent.succeeded":
       const paymentIntent = event.data.object;
+      console.log(paymentIntent)
       await updateOrderStatus({ orderId: paymentIntent.metadata.orderId, status: "received" });
-      if (paymentIntent) {
-        resetCart();
-      }
       break;
     case "payment_intent.payment_failed":
       const failedIntent = event.data.object;
@@ -35,6 +31,5 @@ export async function POST(request: NextRequest) {
     default:
       console.warn(`Unhandled event type ${event.type}`);
   }
-
   return NextResponse.json({ received: true });
 }

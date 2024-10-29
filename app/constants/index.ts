@@ -61,7 +61,15 @@ export const Items = (pageType: string) => {
         { title: "poc contact", icon: "/assets/icons/poc-contact.png" },
         { title: "website", icon: "/assets/icons/link.png" },
       ];
-
+    case "product":
+      return [
+        { title: "category", icon: "/assets/icons/category.png" },
+        { title: "partners", icon: "/assets/icons/partnership.png" },
+        { title: "price", icon: "/assets/icons/price.png" },
+        { title: "url", icon: "/assets/icons/url.png" },
+        { title: "e voucher", icon: "/assets/icons/voucher-icon.png" },
+        { title: "variants", icon: "/assets/icons/variant.png" },
+      ];
     default:
       return [];
   }
@@ -96,11 +104,19 @@ export const menuItems = (type: string) => {
         { label: "Block", icon: "/assets/icons/lock.svg" },
         { label: "Delete", icon: "/assets/icons/delete.png" },
       ];
+    case "customer":
+      return [{ label: "Delete", icon: "/assets/icons/delete.png" }];
     case "partner":
       return [
         { label: "Add", icon: "/assets/icons/plus.png" },
         { label: "Edit", icon: "/assets/icons/edit.png" },
         { label: "Block", icon: "/assets/icons/lock.svg" },
+        { label: "Delete", icon: "/assets/icons/delete.png" },
+      ];
+    case "product":
+      return [
+        { label: "Add", icon: "/assets/icons/plus.png" },
+        { label: "Edit", icon: "/assets/icons/edit.png" },
         { label: "Delete", icon: "/assets/icons/delete.png" },
       ];
     case "order":

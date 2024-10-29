@@ -9,7 +9,7 @@ const BadgeType = ({ type }: BadgeTypeProps) => {
         "bg-[#316AC129]  text-[#316AC1]": type === "collection",
         "bg-[#68686829]  text-[#686868]": type === "default",
         "bg-[#28C76F29] text-[#28C76F]": type === "active",
-        "bg-[#00000029] text-[#f60202ef]": type === "block",
+        "bg-[#00000029] text-[#f60202ef]": type === "block" || type === "close",
         "bg-[#F0900029] text-[#F09000]  ": type === "superAdmin",
         "bg-[#6af30929] text-[#00f020]": type === "admin",
         "bg-[#54634a29] text-[#5b5d5b]": type === "user",
@@ -25,7 +25,7 @@ const BadgeType = ({ type }: BadgeTypeProps) => {
         "bg-[#c1319b29] text-[#9aa5b7]": type === "phone",
         "bg-[#5ec12429] text-[#989faa]": type === "website",
         "bg-[#c9561c29] text-[#a07843]": type === "socialMedia",
-        "bg-[#28C76F29] text-[#28C76F] ": type === "monthly" || type === "physical",
+        "bg-[#28C76F29] text-[#28C76F] ": type === "monthly" || type === "physical" || type === "live",
         "bg-[#ea3b0a29] text-[#a05042] ": type === "daily",
         "bg-[#0d56df29] text-[#5b72a3] ": type === "weekly",
       })}

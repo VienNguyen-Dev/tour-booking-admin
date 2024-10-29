@@ -61,12 +61,32 @@ declare type Customer = {
   $id: string;
   name: string;
   email: string;
-  orderTotal: number;
+  quantityOrder: number;
   contact?: string;
-  shippingInfo: ShippingInfo;
+  address: string;
+  country: string;
+  city: string;
   customerType: "Royalty" | "Repeated" | "First-Time";
   loyaltyPoints: number;
+  orderId: Order[];
+  avatar: string;
+  totalSpent: number;
 };
+declare interface CreateNewCustomerParams {
+  name: string;
+  avatar: string;
+  email: string;
+  quantityOrder: number;
+  contact?: string;
+  address: string;
+  city: string;
+  country: string;
+  type: string;
+  shippingOption: string;
+  customerType: string;
+  loyaltyPoints: number;
+  totalSpent: number;
+}
 declare type Partner = {
   $id: string;
   avatar?: string;
@@ -89,7 +109,7 @@ declare type Partner = {
   shippingOption?: string;
   notes: string;
   fee: number;
-  bookingType?: string;
+  partnerProduct: string;
 };
 
 declare type NewPartnerParams = {
@@ -147,13 +167,30 @@ declare type ProductDataParams = {
   price: number;
   url?: string;
   eVoucher?: string;
-  variantName?: string;
   variantPrice?: string;
   variantDescription?: string;
+  avatar?: string;
+  bookingType?: string;
 };
 declare type NewProductParams = {
   productData: ProductDataParams;
   partnerId: string;
+};
+
+declare type EditProductParams = {
+  type: "staycation" | "collection" | "default";
+  variantPrice?: string;
+  variantDescription?: string;
+  avatar?: string;
+  bookingType?: string;
+  status: string;
+  partnerProduct: string;
+};
+
+declare type EditProductDataParams = {
+  product?: Product;
+  formData: FormData;
+  productId: string;
 };
 
 declare type BadgeTypeProps = {
@@ -162,20 +199,17 @@ declare type BadgeTypeProps = {
 declare type Product = {
   $id: string;
   name: string;
+  avatar: string | File;
   status: "live" | "close";
   categories: "SPA" | "Adventure Tourism" | "Family Tour";
-  partner: Partner[];
+  partnerId: Partner;
   type: "staycation" | "collection" | "default";
   price: number;
   url?: string;
   eVoucher?: string;
-  variant?: Variant;
-};
-
-declare type Variant = {
-  name?: "Tour type" | "Duration" | "Accommodation type" | "Meal plan" | "Transport type" | "Group size";
-  price?: number;
+  variantPrice?: string;
   description?: string;
+  bookingType: string;
 };
 
 declare type Order = {
@@ -234,6 +268,7 @@ declare type CardItemProps = {
   title: string;
   icon: string;
   subtitle: string;
+  pageType?: string;
 };
 
 declare interface UserUpdateParams {

@@ -307,3 +307,46 @@ export const getOrderById = async (orderId: string) => {
     console.log("Error while get order by Id", error);
   }
 };
+
+export const getOrderByCustomerId = async (customerId: string) => {
+  try {
+    const { database } = await createAdminClient();
+    const orders = await database.listDocuments(DATABASE_ID!, ORDER_COLLECTIONS_ID!, [Query.equal("customer", [customerId])]);
+    return parseStringfy({
+      data: orders.documents,
+      quantityOrder: orders.documents.length,
+    });
+  } catch (error) {
+    console.log("Error while get all orders by Id", error);
+  }
+};
+
+export const getOrderByProductId = async (productId: string) => {
+  try {
+    const { database } = await createAdminClient();
+    const order = await database.listDocuments(DATABASE_ID!, ORDER_COLLECTIONS_ID!, [Query.equal("product", [productId])]);
+    console.log(order.documents[0]);
+    return parseStringfy(order.documents[0]);
+  } catch (error) {
+    console.log("Error while get order by product id", error);
+  }
+};
+
+export const getAllOrderByStatus = async () => {
+  try {
+    const { database } = await createAdminClient();
+    const orderByStatus = await database.listDocuments(DATABASE_ID!, ORDER_COLLECTIONS_ID!, [Query.equal("status", ["received"])]);
+    return parseStringfy(orderByStatus.documents);
+  } catch (error) {
+    console.log("Error while get all order by status", error);
+  }
+};
+
+export const deleteOrder = async (orderId: string) => {
+  try {
+    const { database } = await createAdminClient();
+    await database.deleteDocument(DATABASE_ID!, ORDER_COLLECTIONS_ID!, orderId);
+  } catch (error) {
+    console.log("Error while delete this order", error);
+  }
+};

@@ -2,11 +2,12 @@
 import { Input } from "@/components/ui/input";
 
 import Image from "next/image";
+import Link from "next/link";
 import React, { useState } from "react";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 
-const CardItem = ({ title, icon, subtitle }: CardItemProps) => {
+const CardItem = ({ title, icon, subtitle, pageType }: CardItemProps) => {
   const [isEdit, setIsEdit] = useState(false);
   const [phone, setPhone] = useState(title === "contact no" ? subtitle : "");
 
@@ -34,7 +35,15 @@ const CardItem = ({ title, icon, subtitle }: CardItemProps) => {
         <div className="flex flex-col gap-1">
           <h2 className="text-sm lg:text-[16px] font-bold text-[#014C46] capitalize">{title}</h2>
           <p className={`${isEdit && "hidden"} text-xs`}>
-            {subtitle}
+            {title === "price" ? (
+              `AE$${subtitle}`
+            ) : title === "url" || title === "website" || title === "e voucher" ? (
+              <Link className="text-[#014C46] hover:underline line-clamp-1" href={subtitle}>
+                {subtitle}
+              </Link>
+            ) : (
+              subtitle
+            )}
             {`${title === "fee" ? "%" : ""}`}
           </p>
           {isEdit &&
@@ -66,7 +75,7 @@ const CardItem = ({ title, icon, subtitle }: CardItemProps) => {
       </div>
       {/*  "total orders": "2000",
                 "total redeems": "1000", */}
-      {title !== "total orders" && title !== "total redeems" && (
+      {title !== "total orders" && title !== "total redeems" && pageType !== "product" && (
         <Image onClick={() => setIsEdit(true)} src={"/assets/icons/edit.png"} alt={title} width={16} height={16} className=" cursor-pointer hover:opacity-75" />
       )}
     </div>

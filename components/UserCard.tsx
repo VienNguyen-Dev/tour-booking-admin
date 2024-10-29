@@ -23,7 +23,7 @@ const UserCard = ({ users, status, refreshUserList }: { users: User[]; status: s
           <div className="relative w-full h-fit rounded-md shadow-[#2F2B3D24] shadow-md bg-white p-4">
             <div className="flex flex-col mt-[14px] py-2  gap-2">
               <div className="flex gap-2">
-                <img src={user?.avatar} alt={user?.username} width={38} height={38} className=" cursor-pointer rounded-full" />
+                <img src={user?.avatar} alt={user?.username} width={38} height={38} className=" cursor-pointer rounded-full w-10 h-10" />
                 <h1 className="text-xl font-bold">{user?.username}</h1>
               </div>
               <p>{user.email}</p>

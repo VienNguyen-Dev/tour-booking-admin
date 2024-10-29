@@ -24,7 +24,7 @@ const OrderCard = ({ orders, status }: { orders: Order[]; status?: string }) => 
           <div className="relative w-full h-fit rounded-md shadow-[#2F2B3D24] shadow-md bg-white p-3">
             <div className="flex flex-col border-b-[1.5px] border-[#38414A] mt-[14px] py-2  gap-2">
               <div className="flex gap-2">
-                <Image src={"/assets/icons/car.png"} width={20} height={20} alt="car" />
+                <Image src={"/assets/icons/car.png"} width={20} height={20} alt="car" className="w-5 h-5" />
                 <h1 className="text-xl font-bold">{order?.product?.name}</h1>
               </div>
               {/* <p>{order.product.name}</p> */}

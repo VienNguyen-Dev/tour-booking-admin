@@ -11,7 +11,6 @@ import "react-phone-input-2/lib/style.css";
 import * as XLSX from "xlsx";
 import React, { useRef, useState } from "react";
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import PhoneInput from "react-phone-input-2";
 import PasswordRecover from "./PasswordRecover";
 import { Loader2 } from "lucide-react";
 import { toast } from "./hooks/use-toast";
@@ -27,7 +26,6 @@ const formSchema = z.object({
   role: z.string().optional(),
 });
 const EditUser = ({ user, onClose, onUserUpdate, refreshUserList }: { user?: User; onClose: () => void; onUserUpdate: (updatedUser: User) => void; refreshUserList: () => void }) => {
-  const [phone, setPhone] = useState(user?.phoneNumber || "");
   const [updatedUser, setUpdatedUser] = useState(user);
   const [previewImage, setPreviewImage] = useState(user?.avatar);
   const [isPasswordrecoverOpen, setIsPasswordrecoverOpen] = useState(false);

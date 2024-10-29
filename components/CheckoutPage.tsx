@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useStripe, useElements, PaymentElement } from "@stripe/react-stripe-js";
 import convertToSubcurrency from "@/lib/convertToSubcurrency";
+import { getOrderByProductId } from "@/lib/actions/order.actions";
 
 const CheckoutPage = ({ amount, userId, productId }: { amount: number; userId: string; productId: string }) => {
   const stripe = useStripe();
@@ -43,7 +44,7 @@ const CheckoutPage = ({ amount, userId, productId }: { amount: number; userId: s
       elements,
       clientSecret,
       confirmParams: {
-        return_url: `http://www.localhost:3000/payment-success?amount=${amount}`,
+        return_url: `http://www.localhost:3000/payment-success?amount=${amount}&userId=${userId}`,
       },
     });
 

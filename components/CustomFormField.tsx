@@ -1,5 +1,5 @@
 "use client";
-import React, { EventHandler, useState } from "react";
+import React, { useState } from "react";
 import { Control, FieldPath } from "react-hook-form";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "./ui/form";
 import { Input } from "./ui/input";
@@ -14,7 +14,6 @@ import { SelectLabel } from "@radix-ui/react-select";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { addMonths } from "date-fns/addMonths";
-import { addDays } from "date-fns/addDays";
 
 interface CustomFormFieldProps<T extends z.ZodTypeAny> {
   control: Control<z.infer<T>>;
@@ -26,14 +25,16 @@ interface CustomFormFieldProps<T extends z.ZodTypeAny> {
   onValueChange?: (value: string) => void;
   dateRange?: [Date | null, Date | null];
   onDateRangeChange?: (dateRange: [Date | null, Date | null]) => void;
+  partners?: { label: string; value: string }[];
 }
 
-const CustomFormField = <T extends z.ZodTypeAny>({ control, name, label, placeholder, type, fieldType, onValueChange, dateRange, onDateRangeChange }: CustomFormFieldProps<T>) => {
+const CustomFormField = <T extends z.ZodTypeAny>({ control, name, label, placeholder, type, fieldType, onValueChange, dateRange, onDateRangeChange, partners = [] }: CustomFormFieldProps<T>) => {
   const [showPassword, setShowPassword] = useState(true);
+
   const typeInput = name === "password" ? "password" : name === "email" || name === "pocEmail" ? "email" : name === "price" ? "number" : "text";
   const items: string[] =
     name === "fieldType"
-      ? ["Number", "Text"]
+      ? ["Number", "Text", "File"]
       : name === "fieldName" && fieldType === "number"
       ? ["Price"]
       : name === "fieldName" && fieldType === "text"
@@ -54,8 +55,14 @@ const CustomFormField = <T extends z.ZodTypeAny>({ control, name, label, placeho
       ? ["Standard", "Express", "Same day", "Overnight"]
       : name === "bookingType"
       ? ["Instant", "Request", "Scheduled", "On-demand", "Pre-booking"]
+      : name === "fieldVariant"
+      ? ["Variant Price", "Description"]
+      : name === "variantPrice"
+      ? ["AE$", "USA$"]
+      : name === "bookingField"
+      ? ["bookingType"]
       : [];
-  const nameValues = ["role", "status", "type", "partner", "fieldName", "fieldType", "tags", "bookingType", "payment", "shippingOption"];
+  const nameValues = ["role", "status", "type", "partnerProduct", "fieldName", "fieldType", "variantPrice", "fieldVariant", "tags", "bookingType", "payment", "shippingOption", "bookingField"];
   const types = ["name", "categories", "eVoucher", "url", "price"];
   const [selectedRange, setSelectedRange] = useState<[Date | null, Date | null]>(dateRange || [null, null]);
 
@@ -96,17 +103,18 @@ const CustomFormField = <T extends z.ZodTypeAny>({ control, name, label, placeho
               />
             ) : !nameValues.includes(name) ? (
               <div className="relative">
-                {name === "redeemInfo" || name === "notes" ? (
+                {name === "redeemInfo" || name === "notes" || name === "description" ? (
                   <Textarea placeholder={placeholder} {...field} />
                 ) : name !== "phoneNumber" || types.includes(name) ? (
                   <Input
-                    type={typeInput && (typeInput && typeInput === "password" && showPassword ? "password" : "text")}
-                    min={0}
-                    step={0.1}
-                    max={100}
+                    type={typeInput === "password" && showPassword ? "password" : typeInput}
+                    min={name === "price" ? 0 : undefined}
+                    step={name === "price" ? 0.1 : undefined}
+                    max={name === "price" ? 10000 : undefined}
                     placeholder={placeholder}
                     {...field}
-                    className={`${type === "auth" ? "input-class" : ""} `}
+                    className={`${type === "auth" ? "input-class" : ""}`}
+                    name={name}
                   />
                 ) : (
                   <PhoneInput inputStyle={{ width: "100%" }} placeholder="(+971) 5372948395" country={"ae"} value={field.value || ""} onChange={(value) => field.onChange(value || null)} />
@@ -143,11 +151,17 @@ const CustomFormField = <T extends z.ZodTypeAny>({ control, name, label, placeho
                 <SelectContent className="bg-white">
                   <SelectGroup>
                     <SelectLabel>Select a value</SelectLabel>
-                    {items.map((item: string, index: number) => (
-                      <SelectItem key={index} value={convertToLoweCase(item)} className=" capitalize">
-                        {item}
-                      </SelectItem>
-                    ))}
+                    {name !== "partnerProduct"
+                      ? items.map((item: string, index: number) => (
+                          <SelectItem key={index} value={convertToLoweCase(item)} className=" capitalize">
+                            {item}
+                          </SelectItem>
+                        ))
+                      : partners.map((partner, index) => (
+                          <SelectItem key={index} value={partner.value} className=" capitalize">
+                            {partner.label}
+                          </SelectItem>
+                        ))}
                   </SelectGroup>
                 </SelectContent>
               </Select>

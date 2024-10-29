@@ -24,9 +24,12 @@ export async function POST(request: NextRequest) {
       product: productId,
       partner: product.partnerId.$id,
     } as CreateNewOrderParams;
-    await createNewOrder(orderData);
+    const newOrder = await createNewOrder(orderData);
 
-    return NextResponse.json({ clientSecret: paymentIntent.client_secret });
+    return NextResponse.json({
+      clientSecret: paymentIntent.client_secret,
+      orderId: newOrder.$id,
+    });
   } catch (error) {
     console.error("Internal Error:", error);
     return NextResponse.json({ error: `Internal Server Error: ${error}` }, { status: 500 });

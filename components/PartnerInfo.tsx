@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
@@ -13,7 +13,8 @@ import * as XLSX from "xlsx";
 import { partnerInfoSchema } from "@/components/validations";
 import CustomFormField from "@/components/CustomFormField";
 import { convertToUpperCase } from "@/lib/utils";
-import { createNewPartner, createNewProduct, getProduct } from "@/lib/actions/partner.actions";
+import { createNewPartner, createNewProduct } from "@/lib/actions/partner.actions";
+import { Input } from "./ui/input";
 
 const PartnerInfo = () => {
   const [isSubmiting, setIsSubmiting] = useState(false);
@@ -31,8 +32,10 @@ const PartnerInfo = () => {
       website: "",
       pocEmail: "",
       pocPhone: "",
+      partnerProduct: "",
       redeemInfo: "",
       price: 0,
+      avatar: "",
     },
   });
 
@@ -51,20 +54,22 @@ const PartnerInfo = () => {
       pocEmail: data.pocEmail,
       pocPhone: data.pocPhone,
       shippingOption: "standard",
-      bookingType: "request",
       fee: 0,
       packageType: "other",
+      avatar: "",
     };
+    const formData = new FormData();
+    if (data.avatar) {
+      formData.append("avatar", data.avatar);
+    }
 
-    const productData = {
-      name: data.name,
-      price: data.price,
-      categories: data.categories,
-      url: data.url,
-      eVoucher: data.eVoucher,
-      status: data.status,
-      type: data.type,
-    } as Product;
+    formData.append("name", data.name);
+    formData.append("price", data.price.toString());
+    formData.append("categories", JSON.stringify(data.categories));
+    formData.append("url", data.url);
+    formData.append("eVoucher", data.eVoucher.toString());
+    formData.append("status", data.status);
+    formData.append("type", data.type);
 
     try {
       setIsSubmiting(true);
@@ -76,11 +81,9 @@ const PartnerInfo = () => {
           variant: "default",
         });
         setPartner(newPartner);
-        const product = {
-          productData,
-          partnerId: newPartner.$id,
-        };
-        const newProduct = await createNewProduct(product);
+        formData.append("partnerId", newPartner.$id);
+
+        const newProduct = await createNewProduct(formData);
         if (newProduct) {
           setProduct(newProduct);
           toast({
@@ -236,6 +239,7 @@ const PartnerInfo = () => {
                 <CustomFormField name="pocEmail" label="POC Email" placeholder="example@gmail.com" control={form.control} />
                 <CustomFormField name="pocPhone" label="POC Phone" placeholder="(+971) 87495486385" control={form.control} />
               </div>
+              <CustomFormField name="partnerProduct" label="Partner product" placeholder="Anantar a Downtown Dubai Hotel" control={form.control} />
             </div>
             {/* Redeem Info */}
             <div
@@ -276,6 +280,34 @@ const PartnerInfo = () => {
             <h2 className="text-[#014C46] font-bold text-lg xl:text-xl">Product Info</h2>
             <CustomFormField name="status" label="Product Status" control={form.control} placeholder="Select a product status" />
             <CustomFormField name="type" label="Product Type" control={form.control} placeholder="Select a product type" />
+            <FormField
+              control={form.control}
+              name="avatar"
+              render={({ field: { value, onChange, ref, ...fieldProps } }) => (
+                <FormItem>
+                  <FormLabel className="text-form-label">Picture</FormLabel>
+                  <FormControl>
+                    <div className="flex justify-center items-center ">
+                      <Input
+                        accept="image/*"
+                        onChange={(event) => {
+                          const file = event.target.files && event.target.files[0];
+                          if (file) {
+                            const reader = new FileReader();
+
+                            reader.readAsDataURL(file);
+                            onChange(file);
+                          }
+                        }}
+                        type="file"
+                        {...fieldProps}
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage className="text-error-message" />
+                </FormItem>
+              )}
+            />
             <CustomFormField name="partner" label="Partners" control={form.control} placeholder="Select a partner type" />
             <CustomFormField name="fieldType" label="Field Type" control={form.control} placeholder="Select a field type" onValueChange={handleValueChange} />
             <div className="flex gap-6 ">
@@ -299,6 +331,8 @@ const PartnerInfo = () => {
                     ? "https://hotelcheaper.com"
                     : field === "name"
                     ? "Dubai Hotel"
+                    : field === "avatar"
+                    ? "Select a picture"
                     : "";
                 return (
                   <div className="flex gap-6 " key={index}>

@@ -2,15 +2,19 @@
 import { Button } from "@/components/ui/button";
 
 import * as XLSX from "xlsx";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import TabsData from "@/components/DataTabs";
-import { getAllUsers } from "@/lib/actions/user.actions";
 import SvgIcon from "@/components/SvgIcon";
+import { getAllCustomer } from "@/lib/actions/customer.actions";
 
 const CustomerPage = () => {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<Customer[]>([]);
+
+  //Néu đơn hàng => success => 1 client
+  //Lấy 2 loại dữ liệu: //1> Lấy tất cả các đơn hàng với status = receivd
+  //Gom theo từng user
   const refreshUserList = async () => {
-    const res = await getAllUsers();
+    const res = await getAllCustomer();
     setData(res);
   };
 
@@ -33,7 +37,7 @@ const CustomerPage = () => {
   return (
     <section className="flex flex-col w-full space-y-6 p-[22px]">
       <div className="flex justify-between items-center">
-        <h2 className="text-lg xl:text-xl font-bold  text-[#014C46]">Users List</h2>
+        <h2 className="text-lg xl:text-xl font-bold  text-[#014C46]">Customers Order List</h2>
         <Button onClick={() => exportToExcel([1, 2, 3, 4])} variant={"outline"} className="flex gap-2 items-center justify-center min-h-[40px] rounded-[4px] p-[10px] hover:bg-slate-300">
           <SvgIcon width={20} height={20} path={"/assets/icons/Upload.svg"} color="#0D062D" />
           <p className="text-[13px] xl:text-[16px] font-medium text-[#0D062D]">Export</p>

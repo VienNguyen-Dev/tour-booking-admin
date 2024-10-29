@@ -46,6 +46,7 @@ export const partnerInfoSchema = z.object({
   website: z.string().max(100, { message: "Website URL must be at most 100 characters" }).optional(),
   pocEmail: z.string().email({ message: "Please enter a valid email" }).optional(), // Trường này là tùy chọn
   pocPhone: z.string().min(10, { message: "POC phone number must be at least 10 digits" }).max(15, { message: "POC phone number must be at most 15 digits" }).optional(),
+  partnerProduct: z.string().min(10),
   redeemInfo: z.string().max(500, { message: "Redeem info must be at most 500 characters" }).optional(),
 
   status: z.string({ required_error: "Please select a status" }),
@@ -62,6 +63,38 @@ export const partnerInfoSchema = z.object({
   categories: z.string().min(3).max(25),
   url: z.string().url(),
   eVoucher: z.string().min(6).max(6),
+  avatar: z.any().optional(),
+});
+
+export const productSchema = z.object({
+  status: z.string({ required_error: "Please select a status" }),
+  type: z.string({ required_error: "Please select a type" }),
+  fieldType: z.string({ required_error: "Please select a field type" }),
+
+  // Tách riêng fieldName và value
+  fieldName: z.string({ required_error: "Please select a field name" }),
+  price: z.coerce.number().min(0, { message: "Price must be at least 0" }).max(1000, { message: "Price must be at most 1000" }),
+  // .nonnegative("Price must be a positive number")
+  // .refine((val) => !isNaN(val), { message: "Price must be a valid number" }),
+  name: z.string().min(3).max(100),
+  categories: z.string().min(3).max(25),
+  url: z.string().url(),
+  eVoucher: z.string().min(6),
+  avatar: z.any().optional(),
+  partnerProduct: z.string().min(10),
+});
+export const editProductSchema = z.object({
+  status: z.string({ required_error: "Please select a status" }),
+  type: z.string({ required_error: "Please select a type" }),
+  fieldType: z.string({ required_error: "Please select a field type" }),
+
+  // Tách riêng fieldName và value
+  fieldName: z.string({ required_error: "Please select a field name" }),
+  variantPrice: z.string(),
+  avatar: z.any().optional(),
+  partnerProduct: z.string().min(10),
+  description: z.string().optional(),
+  bookingType: z.string()
 });
 
 export const editPartnerSchema = z.object({

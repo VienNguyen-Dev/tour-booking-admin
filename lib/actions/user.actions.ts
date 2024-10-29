@@ -6,7 +6,7 @@ import { ID, OAuthProvider, Query } from "node-appwrite";
 import { decryptPassword, encryptPassword, parseStringfy } from "../utils";
 const { USER_COLLECTIONS_ID, DATABASE_ID, APPWRITE_STORAGE_BUCKET_ID } = process.env;
 import { revalidatePath } from "next/cache";
-
+import { InputFile } from "node-appwrite/file";
 //Create new User:
 //1. Credential by email and password
 //2. Oauth
@@ -288,7 +288,7 @@ export async function updateUser(userData: UserUpdateParams) {
   }
 }
 
-async function uploadAvatar(avatar: File): Promise<string | undefined> {
+export async function uploadAvatar(avatar: File): Promise<string | undefined> {
   try {
     const { storage } = await createAdminClient();
     const file = await storage.createFile(APPWRITE_STORAGE_BUCKET_ID!, ID.unique(), avatar);
