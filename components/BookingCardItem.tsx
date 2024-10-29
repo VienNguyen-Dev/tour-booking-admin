@@ -28,7 +28,7 @@ export function BookingCardItem({ tour, user }: { tour: Tour; user: User }) {
       <CardContent>
         <div className="flex flex-col space-y-1.5 cursor-pointer">
           <img src={tour.image} alt={tour.product.name} width={350} height={250} className="rounded-sm" />
-          <p className=" line-clamp-2">{tour.product.variant?.description}</p>
+          <p className=" line-clamp-2">{tour.product.description}</p>
           <p>{formatAmount(tour.product.price)}</p>
         </div>
       </CardContent>
